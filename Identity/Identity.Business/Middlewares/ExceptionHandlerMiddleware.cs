@@ -1,4 +1,4 @@
-using System.Net;
+using FluentValidation;
 using Identity.Business.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -24,13 +24,17 @@ public class ExceptionHandlerMiddleware
 		{
 			await HandleApiExceptionMessageAsync(context, ex);
 		}
+		catch (ValidationException ex)
+		{
+			await HandleValidationExceptionAsync(context, ex);			
+		}
 		catch (Exception)
 		{
 			await HandleInternalServerErrorAsync(context);
 		}
 	}
 	
-	private static Task HandleApiExceptionMessageAsync(HttpContext context, ApiException exception) 
+	private static async Task HandleApiExceptionMessageAsync(HttpContext context, ApiException exception) 
 	{				
 		var result = JsonConvert.SerializeObject(new  
 		{  
@@ -39,9 +43,10 @@ public class ExceptionHandlerMiddleware
 		});  
 		context.Response.ContentType = "application/json";  
 		context.Response.StatusCode = exception.StatusCode;  
-		return context.Response.WriteAsync(result);  
+		await context.Response.WriteAsync(result);  
 	}
-	private static Task HandleInternalServerErrorAsync(HttpContext context)
+	
+	private static async Task HandleInternalServerErrorAsync(HttpContext context)
 	{
 		var result = JsonConvert.SerializeObject(new
 		{
@@ -50,6 +55,21 @@ public class ExceptionHandlerMiddleware
 		});
 		context.Response.ContentType = "application/json";  
 		context.Response.StatusCode = 500;  
-		return context.Response.WriteAsync(result);  
+		await context.Response.WriteAsync(result);  
+	}
+	
+	private static async Task HandleValidationExceptionAsync(HttpContext context, ValidationException exception)
+	{				
+		var message = exception.Errors.Select(err => err.ErrorMessage)
+			.Aggregate((a, c) => $"{a}{c}");
+
+		var result = JsonConvert.SerializeObject(new
+		{
+			StatusCode = ApiException.BadRequest,
+			ErrorMessage = message
+		});
+		context.Response.ContentType = "application/json";
+		context.Response.StatusCode = ApiException.BadRequest;
+		await context.Response.WriteAsync(result);
 	}
 }
