@@ -4,13 +4,15 @@ namespace Identity.Business.Interfaces;
 
 public interface IUserService
 {
-	Task<TokenDto> Login(LoginDto loginModel);
-	Task<TokenDto> SignUp(SignupDto signupModel);
-	Task<UserDto> Register(RegisterDto registerModel, string? registererRole);
+	Task<TokenDto> LoginAsync(LoginDto loginModel);
+	Task<TokenDto> SignUpAsync(SignupDto signupModel);
+	Task<UserDto> RegisterAsync(RegisterDto registerModel, string? registererRole);
 	
-	Task<IEnumerable<UserIdDto>> GetSpecified(string? userName, string? phone, string? email);
-	Task<UserDto> GetById(string? id);
+	Task<IEnumerable<UserIdDto>> GetAllWithSpecAsync(SpecDto specDto, string? userRole);
+	Task<UserDto> GetByIdAsync(string? id, string? userRole);
 
-	Task<UserDto> Update(string? id, UserUpdateDto userUpdateDto);
-	Task UpdatePassword(string? id, PasswordDto passwordDto);
+	Task<UserDto> UpdateAsync(string? id, UserUpdateDto userUpdateDto);
+	Task UpdatePasswordAsync(string? id, PasswordDto passwordDto);
+
+	Task DeleteAsync(string? id, string? userRole);
 }
