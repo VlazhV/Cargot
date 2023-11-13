@@ -116,13 +116,8 @@ public class UserService : IUserService
 		var spec = new UserSpecification(specDto.PhoneNumber, specDto.Email, specDto.UserName);
 		var users = await _userRepository.GetAllWithSpec(spec);	
 		
-		var userDtos = new List<UserIdDto>();
-		foreach (var u in users)
-		{
-			var userDto = _mapper.Map<UserIdDto>(u);
-			userDtos.Add(userDto);
-		}
-		
+		var userDtos = users.Select(u => _mapper.Map<UserIdDto>(u)).ToList();
+				
 		return userDtos;
 	}
 	
