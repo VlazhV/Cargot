@@ -7,12 +7,14 @@ public class ApiException : Exception
 	public const int Unauthorized = 401;
 	public const int BadRequest = 400;
 	public int StatusCode { get; private set; }
+	
 	public ApiException() { }
 	
 	public ApiException(string message, int statusCode) : base(message) 
 	{
 		StatusCode = statusCode;	
 	}
+	
 	public ApiException(string message, System.Exception inner) : base(message, inner) { }
 	protected ApiException(
 		System.Runtime.Serialization.SerializationInfo info,
