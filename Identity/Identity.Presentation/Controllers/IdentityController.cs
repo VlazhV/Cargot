@@ -35,12 +35,8 @@ public class IdentityController : ControllerBase
 	[HttpPost("register")]
 	[Authorize]
 	public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
-	{
-		var role = User.FindFirst(ClaimTypes.Role)?.Value;
-		if (role != Role.Admin && role != Role.Manager)
-			return NotFound();
-		return Ok(await _userService.RegisterAsync(registerDto, User.FindFirst(ClaimTypes.Role)?.Value));
-		
+	{				
+		return Ok(await _userService.RegisterAsync(registerDto, User.FindFirst(ClaimTypes.Role)?.Value));		
 	}
 	
 	

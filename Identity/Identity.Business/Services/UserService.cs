@@ -53,15 +53,15 @@ public class UserService : IUserService
 	}
 
 
-	public async Task<UserDto> RegisterAsync(RegisterDto registerDto, string? registererRole)
+	public async Task<UserDto> RegisterAsync(RegisterDto registerDto, string? receptionistRole)
 	{
 		var validator = new RegisterValidator();
 		await validator.ValidateAndThrowAsync(registerDto);
 		
-		if (registererRole is null)
+		if (receptionistRole != Role.Manager && receptionistRole != Role.Admin)
 			throw new ApiException("Unauthorized", ApiException.Unauthorized);
 		
-		if (registererRole == Role.Manager && registerDto.Role == Role.Admin)
+		if (receptionistRole == Role.Manager && registerDto.Role == Role.Admin)
 			throw new ApiException("No permission", ApiException.BadRequest);
 					
 		var user = _mapper.Map<IdentityUser<long>>(registerDto);
