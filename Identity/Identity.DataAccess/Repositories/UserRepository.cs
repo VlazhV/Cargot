@@ -32,19 +32,4 @@ public class UserRepository: IUserRepository
 
 		return await query.ToListAsync();
 	}
-	
-		
-
-	public async Task<IdentityUserToken<long>?> GetTokenAsync(IdentityUser<long> user)
-	{
-		var ut = await _db.UserTokens.FirstOrDefaultAsync(ut => ut.UserId == user.Id);
-		return ut;
-	}
-
-	public async Task UpdateTokenAsync(IdentityUserToken<long> token, string? value)
-	{
-		token.Value = value;
-		_db.UserTokens.Update(token);
-		await _db.SaveChangesAsync();
-	}		
 }
