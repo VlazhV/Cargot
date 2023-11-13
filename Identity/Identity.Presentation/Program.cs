@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Identity.DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddDbContext<DatabaseContext>(options => 
+{
+	options.UseSqlServer(
+		builder.Configuration.GetConnectionString("Default"),
+		sqlBuilder => sqlBuilder.MigrationsAssembly(nameof(Identity.DataAccess)));
+});
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 builder.Services.AddScoped<ITokenService, TokenService>();

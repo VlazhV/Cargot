@@ -23,13 +23,13 @@ public class IdentityController : ControllerBase
 	[HttpPost("login")]
 	public async Task<ActionResult<TokenDto>> Login([FromBody] LoginDto loginModel)
 	{
-		return Ok(await _userService.Login(loginModel));
+		return Ok(await _userService.LoginAsync(loginModel));
 	}
 
 	[HttpPost("sign-up")]
 	public async Task<ActionResult<TokenDto>> SignUp([FromBody] SignupDto signupModel)
 	{
-		return Ok(await _userService.SignUp(signupModel));
+		return Ok(await _userService.SignUpAsync(signupModel));
 	}
 
 	[HttpPost("register")]
@@ -39,7 +39,7 @@ public class IdentityController : ControllerBase
 		var role = User.FindFirst(ClaimTypes.Role)?.Value;
 		if (role != Role.Admin && role != Role.Manager)
 			return NotFound();
-		return Ok(await _userService.Register(registerDto, User.FindFirst(ClaimTypes.Role)?.Value));
+		return Ok(await _userService.RegisterAsync(registerDto, User.FindFirst(ClaimTypes.Role)?.Value));
 		
 	}
 	

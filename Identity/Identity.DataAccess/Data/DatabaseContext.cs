@@ -10,17 +10,4 @@ public class DatabaseContext: IdentityDbContext<IdentityUser<long>, IdentityRole
 {
 	public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 	
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		if (!optionsBuilder.IsConfigured)
-		{
-			IConfigurationRoot configuration = new ConfigurationBuilder()
-				.SetBasePath(Directory.GetCurrentDirectory())
-				.AddJsonFile("appsettings.json")
-				.Build();
-
-			var connectionString = configuration.GetConnectionString("Default");
-			optionsBuilder.UseSqlServer(connectionString);
-		}
-	}
 }

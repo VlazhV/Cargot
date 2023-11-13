@@ -13,5 +13,6 @@ public class AutoMapperProfile: Profile
 		CreateMap<SignupDto, IdentityUser<long>>();
 		CreateMap<RegisterDto, IdentityUser<long>>();
 		CreateMap<IdentityUser<long>, UserIdDto>();
+		CreateMap<LoginDto, SignupDto>().ReverseMap();					
 	}
 }

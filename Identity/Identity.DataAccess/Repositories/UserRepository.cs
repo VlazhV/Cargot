@@ -16,7 +16,15 @@ public class UserRepository: IUserRepository
 		_db = db;
 	}
 
-	public async Task<IEnumerable<IdentityUser<long>>> GetSpecified(UserSpecification specification)
+	public bool DoesItExist(IdentityUser<long> candidate)
+	{
+		return _db.Users.Any(u => u.Email!.Equals(candidate.Email)
+					|| u.UserName!.Equals(candidate.UserName)
+					|| u.PhoneNumber!.Equals(candidate.PhoneNumber));
+		
+	}
+
+	public async Task<IEnumerable<IdentityUser<long>>> GetAllWithSpec(UserSpecification specification)
 	{
 		IQueryable<IdentityUser<long>> query = _db.Users;
 
