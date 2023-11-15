@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Autopark.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 
 namespace Autopark.DataAccess.Data;
 
@@ -17,18 +15,14 @@ public class DatabaseContext: DbContext
 	{		
 	}
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		if (!optionsBuilder.IsConfigured)
-		{
-			IConfigurationRoot configuration = new ConfigurationBuilder()
-				.SetBasePath(Directory.GetCurrentDirectory())
-				.AddJsonFile("appsettings.json")
-				.Build();
+		modelBuilder.Entity<Car>()
+			.HasIndex(c => c.LicenseNumber)
+			.IsUnique();
 
-			var connectionString = configuration.GetConnectionString("Default");
-			optionsBuilder.UseSqlServer(connectionString);
-		}
+		modelBuilder.Entity<Trailer>()
+			.HasIndex(t => t.LicenseNumber)
+			.IsUnique();			
 	}
-
 }
