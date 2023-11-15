@@ -1,33 +1,62 @@
+using Autopark.DataAccess.Data;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
 public class CarRepository : ICarRepository
 {
-    public Task<Car> CreateAsync(Car entity)
-    {
-        throw new NotImplementedException();
-    }
+	private readonly DatabaseContext _db;
 
-    public Task DeleteAsync(Car entity)
-    {
-        throw new NotImplementedException();
-    }
+	public CarRepository(DatabaseContext db)
+	{
+		_db = db;
+	}
 
-    public Task<Car> Get(int id)
-    {
-        throw new NotImplementedException();
-    }
+	
+	public async Task<Car> CreateAsync(Car entity)
+	{
+		var entry = await _db.Cars.AddAsync(entity);
+		await _db.SaveChangesAsync();
+		
+		return entry.Entity;
+	}
 
-    public Task<IEnumerable<Car>> GetAll(Car entity)
-    {
-        throw new NotImplementedException();
-    }
+	public async Task DeleteAsync(Car entity)
+	{
+		_db.Cars.Remove(entity);
+		await _db.SaveChangesAsync();
+	}
 
-    public Task<Car> UpdateAsync(Car entity)
-    {
-        throw new NotImplementedException();
-    }
+	public async Task<Car?> GetByIdAsync(int id)
+	{
+		var entity = await _db.Cars
+			.Include(c => c.Autopark)
+			.FirstOrDefaultAsync(c => c.Id == id);
 
+		return entity;
+	}
+
+	public async Task<IEnumerable<Car>> GetAllAsync()
+	{
+		var entities = await _db.Cars
+			.Include(c => c.Autopark)
+			.ToListAsync();
+
+		return entities;
+	}
+
+	public async Task<Car> UpdateAsync(Car entity)
+	{
+		var entry = _db.Cars.Update(entity);
+		await _db.SaveChangesAsync();
+
+		return entry.Entity;
+	}
+
+    public bool DoesItExist(int id)
+    {
+		return _db.Cars.Any(c => c.Id == id);
+    }
 }
