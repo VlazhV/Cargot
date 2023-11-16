@@ -26,42 +26,11 @@ public class ExceptionHandlerMiddleware
 		catch (ApiException ex)
 		{
 			await HandleApiExceptionMessageAsync(context, ex);
-		}
-		catch (DbUpdateException ex)
-		{
-			await HandleDbExceptionAsync(context, ex);
-		}
+		}		
 		catch (Exception)
 		{
 			await HandleInternalServerErrorAsync(context);
 		}
-	}
-
-	private async Task HandleDbExceptionAsync(HttpContext context, DbUpdateException ex)
-	{
-		string result;
-		if (ex.InnerException!.HResult == DUPLICATE)
-		{
-			result = JsonConvert.SerializeObject(new
-			{
-				StatusCode = ApiException.BadRequest,
-				ErrorMessage = "one or more fields are already reserved"
-			});
-			context.Response.StatusCode = ApiException.BadRequest;
-		} 
-		else 
-		{
-			result = JsonConvert.SerializeObject(new
-			{
-				StatusCode = 500,
-				ErrorMessage = "Internal Server Error"
-			});
-			context.Response.StatusCode = 500;
-		}
-
-		context.Response.ContentType = "application/json";
-		await context.Response.WriteAsync(result);
-
 	}
 
 	private static async Task HandleApiExceptionMessageAsync(HttpContext context, ApiException exception) 
