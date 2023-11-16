@@ -14,5 +14,7 @@ public class Car
 	public int CapacityHeight { get; set; } //mm
 
 	public Autopark Autopark { get; set; } = null!;
-	public int AutoparkId { get; set; } 
+	public int AutoparkId { get; set; }
+
+	public List<CarInShipShedule> Shedules { get; set; } = null!;
 }

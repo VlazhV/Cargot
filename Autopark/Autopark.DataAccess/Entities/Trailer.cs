@@ -13,4 +13,6 @@ public class Trailer
 
 	public Autopark Autopark { get; set; } = null!;
 	public int AutoparkId { get; set; }
+
+	public List<TrailerInShipShedule> Shedules { get; set; } = null!;
 }
