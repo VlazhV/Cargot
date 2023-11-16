@@ -1,11 +1,13 @@
 using Autopark.Business.DTOs.AutoparkDTOs;
 using Autopark.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Autopark.Presentation.Controllers;
 
 [Route("api/autoparks")]
 [ApiController]
+[Authorize(Roles = "admin, manager")]
 public class AutoparksController : ControllerBase
 {
 	private readonly IAutoparkService _autoparkService;

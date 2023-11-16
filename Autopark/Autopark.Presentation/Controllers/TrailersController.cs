@@ -1,19 +1,23 @@
 using Autopark.Business.DTOs.SheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Autopark.Presentation.Controllers;
 
 [Route("api/trailers")]
 [ApiController]
+[Authorize(Roles = "admin, manager")]
 public class TrailersController : ControllerBase
 {
 	private readonly ITrailerService _trailerService;
+	private readonly ITrailerSheduleService _sheduleService;
 	
-	public TrailersController(ITrailerService trailerService)
+	public TrailersController(ITrailerService trailerService, ITrailerSheduleService sheduleService)
 	{
 		_trailerService = trailerService;
+		_sheduleService = sheduleService;
 	}
 
 		
@@ -49,27 +53,15 @@ public class TrailersController : ControllerBase
 	}	
 	
 	[HttpPost("{trailerId}/shedules")]
-	public async Task<ActionResult<GetSheduleDto>> AddSheduleAsync([FromRoute] int trailerId, UpdatePlanSheduleDto sheduleDto)
+	public async Task<ActionResult<GetSheduleDto>> AddSheduleAsync
+		([FromRoute] int trailerId, UpdatePlanSheduleDto sheduleDto)
 	{
-		return Ok(await _trailerService.AddPlannedSheduleAsync(trailerId, sheduleDto));
+		return Ok(await _sheduleService.AddPlannedSheduleAsync(trailerId, sheduleDto));
 	}
 	
-	[HttpPut("{trailerId}/shedules/{id}")]
-	public async Task<ActionResult<GetSheduleDto>> UpdateSheduleAsync([FromRoute] int id, UpdatePlanSheduleDto sheduleDto)
+	[HttpGet("{trailerId}/shedules")]
+	public async Task<ActionResult<IEnumerable<GetSheduleDto>>> GetShedulesOfTrailerAsync([FromRoute] int trailerId)
 	{
-		return Ok(await _trailerService.UpdatePlannedSheduleAsync(id, sheduleDto));
-	}
-	
-	[HttpPost("{trailerId}/shedules/{id}")]
-	public async Task<ActionResult<GetSheduleDto>> UpdateActualSheduleAsync([FromRoute] int id)
-	{
-		return Ok(await _trailerService.UpdateActualSheduleAsync(id));
-	}
-	
-	[HttpDelete("{trailerId}/shedules/{id}")]
-	public async Task<ActionResult> DeleteSheduleAsync([FromRoute] int id)
-	{
-		await _trailerService.DeleteSheduleAsync(id);
-		return Ok();
-	}
+		return Ok(await _sheduleService.GetShedulesOfVehicleAsync(trailerId));
+	}	
 }
