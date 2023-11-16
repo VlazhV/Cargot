@@ -59,4 +59,19 @@ public class TrailerRepository : ITrailerRepository
 		return entry.Entity;
 	}
 
+	public bool DoesItExist(string licenseNumber)
+	{
+		return _db.Trailers.Any(t => t.LicenseNumber.Equals(licenseNumber));
+	}
+
+	public async Task<IEnumerable<Trailer>> GetWithSpecsAsync(IEnumerable<ISpecification<Trailer>> specs)
+	{
+		IQueryable<Trailer> query = _db.Trailers.Include(t => t.Autopark);
+		foreach (var s in specs)
+			query = s.Build(query);
+
+		var entities = await query.ToListAsync();
+
+		return entities;
+	}
 }

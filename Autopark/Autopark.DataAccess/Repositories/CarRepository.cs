@@ -55,8 +55,24 @@ public class CarRepository : ICarRepository
 		return entry.Entity;
 	}
 
-    public bool DoesItExist(int id)
-    {
+	public bool DoesItExist(int id)
+	{
 		return _db.Cars.Any(c => c.Id == id);
-    }
+	}
+
+	public bool DoesItExist(string licenseNumber)
+	{
+		return _db.Cars.Any(c => c.LicenseNumber.Equals(licenseNumber));
+	}
+
+	public async Task<IEnumerable<Car>> GetWithSpecsAsync(IEnumerable<ISpecification<Car>> specs)
+	{
+		IQueryable<Car> query = _db.Cars.Include(c => c.Autopark);
+		foreach (var s in specs)
+			query = s.Build(query);
+
+		var entities = await query.ToListAsync();
+
+		return entities;
+	}
 }
