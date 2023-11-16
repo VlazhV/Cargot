@@ -13,6 +13,8 @@ using Autopark.Business.Validators;
 using Autopark.Business.DTOs.CarDTOs;
 using Autopark.Business.DTOs.TrailerDTOs;
 using System.Reflection;
+using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,8 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ITrailerService, TrailerService>();
 builder.Services.AddScoped<IAutoparkService, AutoparkService>();
+builder.Services.AddScoped<ICarSheduleService, CarSheduleService>();
+builder.Services.AddScoped<ITrailerSheduleService, TrailerSheduleService>();
 
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ITrailerRepository, TrailerRepository>();
@@ -45,9 +49,15 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<UpdateAutoparkDto>, UpdateAutoparkValidator>();
 builder.Services.AddScoped<IValidator<UpdateCarDto>, UpdateCarValidator>();
 builder.Services.AddScoped<IValidator<UpdateTrailerDto>, UpdateTrailerValidator>();
+builder.Services.AddScoped<IValidator<UpdatePlanSheduleDto>, UpdatePlanSheduleValidator>();
+builder.Services.AddScoped<IValidator<SpecDto>, SpecValidator>();
+
+builder.Services.AddIdentityService(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 
@@ -58,6 +68,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandlerMiddleware();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
