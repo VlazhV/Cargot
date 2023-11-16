@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using AutoMapper;
+using Autopark.Business.DTOs;
 using Autopark.Business.DTOs.CarDTOs;
 using Autopark.Business.DTOs.SheduleDtos;
 using Autopark.Business.Interfaces;
 using Autopark.Business.Validators;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
+using Autopark.DataAccess.Specifications;
 using FluentValidation;
 using Identity.Business.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +33,9 @@ public class CarService : ICarService
 
 	public async Task<GetCarDto> CreateAsync(UpdateCarDto carDto)
 	{
+		if (_carRepository.DoesItExist(carDto.LicenseNumber!))
+			throw new ApiException("license number is reserved", ApiException.BadRequest);
+			
 		var car = _mapper.Map<Car>(carDto);
 		car = await _carRepository.CreateAsync(car);
 
@@ -45,9 +50,18 @@ public class CarService : ICarService
 		await _carRepository.DeleteAsync(car);		
 	}
 
-	public async Task<IEnumerable<GetCarAutoparkDto>> GetAllAsync()
+	public async Task<IEnumerable<GetCarAutoparkDto>> GetWithSpecsAsync(SpecDto specDto)
 	{
-		var cars = await _carRepository.GetAllAsync();
+		List<ISpecification<Car>> specs = new();
+		if (specDto.FreeOnly)
+		{
+			specs.Add(
+				new FreeOnlyCarSpecification
+					(specDto.Start.GetValueOrDefault(), specDto.Finish.GetValueOrDefault())
+			);
+		}
+		
+		var cars = await _carRepository.GetWithSpecsAsync(specs);
 		
 		return cars.Select(c => _mapper.Map<GetCarAutoparkDto>(c));
 	}
@@ -64,6 +78,9 @@ public class CarService : ICarService
 	{
 		if (!_carRepository.DoesItExist(id))
 			throw new ApiException("Car not found", ApiException.NotFound);
+
+		if (_carRepository.DoesItExist(carDto.LicenseNumber!))
+			throw new ApiException("License number is reserved", ApiException.BadRequest);
 		
 		var car = _mapper.Map<Car>(carDto);
 		car.Id = id;
@@ -71,77 +88,5 @@ public class CarService : ICarService
 		car = await _carRepository.UpdateAsync(car);	
 		
 		return _mapper.Map<GetCarDto>(car);
-	}
-	
-	public async Task<GetSheduleDto> AddPlannedSheduleAsync(int carId, UpdatePlanSheduleDto sheduleDto)
-	{
-		if (!_carRepository.DoesItExist(carId))
-			throw new ApiException("Car not found", ApiException.NotFound);
-		
-		var shedule = _mapper.Map<CarInShipShedule>(sheduleDto);
-		shedule.CarId = carId;
-
-		shedule = await _sheduleRepository.CreateAsync(shedule);
-		
-		return _mapper.Map<GetSheduleDto>(shedule);
-	}
-	
-	public async Task<GetSheduleDto> UpdatePlannedSheduleAsync(int sheduleId, UpdatePlanSheduleDto sheduleDto)
-	{
-		if (!_sheduleRepository.DoesItExist(sheduleId))
-			throw new ApiException("Shedule not found", ApiException.NotFound);
-		
-		var shedule = _mapper.Map<CarInShipShedule>(sheduleDto);
-		shedule.Id = sheduleId;
-		
-		shedule = await _sheduleRepository.UpdateAsync(shedule);	
-		
-		return _mapper.Map<GetSheduleDto>(shedule);
-	}
-
-	public async Task<GetSheduleDto> UpdateActualSheduleAsync(int sheduleId)
-	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
-
-		if (shedule.Start is not null)
-			shedule.Start = DateTime.UtcNow;		
-		
-		else if (shedule.Finish is not null)		
-			shedule.Finish = DateTime.UtcNow;
-		
-		else
-			throw new ApiException("Shedule is filled", ApiException.BadRequest);
-
-		shedule = await _sheduleRepository.UpdateAsync(shedule);
-
-		return _mapper.Map<GetSheduleDto>(shedule);
-	}
-	
-	public async Task DeleteSheduleAsync(int sheduleId)
-	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
-
-		await _sheduleRepository.DeleteAsync(shedule);				
-	}
-
-	public async Task<GetSheduleDto> GetSheduleByIdAsync(int sheduleId)
-	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
-
-		return _mapper.Map<GetSheduleDto>(shedule);
-		
-	}
-
-	public async Task<IEnumerable<GetSheduleDto>> GetShedulesAsync(int carId)
-	{
-		if (!_carRepository.DoesItExist(carId))
-			throw new ApiException("Car not found", ApiException.NotFound);
-			
-		var shedules = await _sheduleRepository.GetAllOfCarAsync(carId);
-
-		return shedules.Select(s => _mapper.Map<GetSheduleDto>(s));
-	}
+	}	
 }
