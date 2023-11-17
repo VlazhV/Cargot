@@ -26,7 +26,9 @@ public class TrailerSheduleService: ITrailerSheduleService
 	public async Task<GetSheduleDto> AddPlannedSheduleAsync(int vehicleId, UpdatePlanSheduleDto sheduleDto)
 	{
 		if (!_trailerRepository.DoesItExist(vehicleId))
-			throw new ApiException("Trailer not found", ApiException.NotFound);
+		{
+			throw new ApiException("Trailer not found", ApiException.NotFound);	
+		}
 		
 		var shedule = _mapper.Map<TrailerInShipShedule>(sheduleDto);
 		shedule.TrailerId = vehicleId;
@@ -55,14 +57,18 @@ public class TrailerSheduleService: ITrailerSheduleService
 			?? throw new ApiException("Shedule not found", ApiException.NotFound);
 
 		if (shedule.Start is null)
+		{
 			shedule.Start = DateTime.UtcNow;		
-		
-		else if (shedule.Finish is null)		
+		}					
+		else if (shedule.Finish is null)
+		{
 			shedule.Finish = DateTime.UtcNow;
-		
+		}					
 		else
+		{
 			throw new ApiException("Shedule is filled", ApiException.BadRequest);
-
+		}
+			
 		shedule = await _sheduleRepository.UpdateAsync(shedule);
 
 		return _mapper.Map<GetSheduleDto>(shedule);
@@ -87,7 +93,9 @@ public class TrailerSheduleService: ITrailerSheduleService
 	public async Task<IEnumerable<GetSheduleDto>> GetShedulesOfVehicleAsync(int vehicleId)
 	{
 		if (!_trailerRepository.DoesItExist(vehicleId))
-			throw new ApiException("Trailer not found", ApiException.NotFound);
+		{
+			throw new ApiException("Trailer not found", ApiException.NotFound);	
+		}			
 			
 		var shedules = await _sheduleRepository.GetAllOfTrailerAsync(vehicleId);
 

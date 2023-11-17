@@ -1,3 +1,4 @@
+using Autopark.Business.DTOs;
 using Autopark.Business.DTOs.SheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.Business.Interfaces;
@@ -28,9 +29,9 @@ public class TrailersController : ControllerBase
 	}
 	
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<GetTrailerAutoparkDto>>> GetAllAsync()
+	public async Task<ActionResult<IEnumerable<GetTrailerAutoparkDto>>> GetWithSpecsAsync(SpecDto specDto)
 	{
-		return Ok(await _trailerService.GetAllAsync());
+		return Ok(await _trailerService.GetWithSpecsAsync(specDto));
 	}	
 	
 	[HttpPost]

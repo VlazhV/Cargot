@@ -25,8 +25,9 @@ public class CarSheduleService: ICarSheduleService
 
 	public async Task<GetSheduleDto> AddPlannedSheduleAsync(int vehicleId, UpdatePlanSheduleDto sheduleDto)
 	{
-		if (!_carRepository.DoesItExist(vehicleId))
+		if (!_carRepository.DoesItExist(vehicleId)){
 			throw new ApiException("Car not found", ApiException.NotFound);
+		}
 		
 		var shedule = _mapper.Map<CarInShipShedule>(sheduleDto);
 		shedule.CarId = vehicleId;
@@ -55,13 +56,18 @@ public class CarSheduleService: ICarSheduleService
 			?? throw new ApiException("Shedule not found", ApiException.NotFound);
 
 		if (shedule.Start is null)
+		{
 			shedule.Start = DateTime.UtcNow;		
-		
-		else if (shedule.Finish is null)		
+		}					
+		else if (shedule.Finish is null)
+		{
 			shedule.Finish = DateTime.UtcNow;
-		
+		}					
 		else
+		{
 			throw new ApiException("Shedule is filled", ApiException.BadRequest);
+		}
+			
 
 		shedule = await _sheduleRepository.UpdateAsync(shedule);
 

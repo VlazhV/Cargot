@@ -34,7 +34,10 @@ public class CarService : ICarService
 	public async Task<GetCarDto> CreateAsync(UpdateCarDto carDto)
 	{
 		if (_carRepository.DoesItExist(carDto.LicenseNumber!))
+		{
 			throw new ApiException("license number is reserved", ApiException.BadRequest);
+		}
+			
 			
 		var car = _mapper.Map<Car>(carDto);
 		car = await _carRepository.CreateAsync(car);
@@ -77,10 +80,14 @@ public class CarService : ICarService
 	public async Task<GetCarDto> UpdateAsync(int id, UpdateCarDto carDto)
 	{
 		if (!_carRepository.DoesItExist(id))
+		{
 			throw new ApiException("Car not found", ApiException.NotFound);
-
+		}
+			
 		if (_carRepository.DoesItExist(carDto.LicenseNumber!))
+		{
 			throw new ApiException("License number is reserved", ApiException.BadRequest);
+		}			
 		
 		var car = _mapper.Map<Car>(carDto);
 		car.Id = id;

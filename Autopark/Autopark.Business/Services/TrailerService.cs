@@ -34,7 +34,9 @@ public class TrailerService: ITrailerService
 	public async Task<GetTrailerDto> CreateAsync(UpdateTrailerDto trailerDto)
 	{
 		if (_trailerRepository.DoesItExist(trailerDto.LicenseNumber!))
+		{
 			throw new ApiException("License number is reserved", ApiException.BadRequest);
+		}			
 			
 		var trailer = _mapper.Map<Trailer>(trailerDto);
 		trailer = await _trailerRepository.CreateAsync(trailer);
@@ -77,10 +79,14 @@ public class TrailerService: ITrailerService
 	public async Task<GetTrailerDto> UpdateAsync(int id, UpdateTrailerDto trailerDto)
 	{
 		if (!_trailerRepository.DoesItExist(id))
+		{
 			throw new ApiException("Trailer not found", ApiException.NotFound);
-			
+		}
+						
 		if (_trailerRepository.DoesItExist(trailerDto.LicenseNumber!))
-			throw new ApiException("License number is reserved", ApiException.BadRequest);
+		{
+			throw new ApiException("License number is reserved", ApiException.BadRequest);	
+		}			
 		
 		var trailer = _mapper.Map<Trailer>(trailerDto);
 		trailer.Id = id;
