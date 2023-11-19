@@ -12,17 +12,15 @@ namespace Identity.Business.Services;
 
 public class UserService : IUserService
 {
-	private UserManager<IdentityUser<long>> _userManager;
-	private IUserRepository _userRepository;
-	private ITokenService _tokenService;
-	private IMapper _mapper;
+	private readonly IUserRepository _userRepository;
+	private readonly ITokenService _tokenService;
+	private readonly IMapper _mapper;
 
-	public UserService(UserManager<IdentityUser<long>> userManager,
+	public UserService(
 			IUserRepository userRepository,
 			ITokenService tokenService,
 			IMapper mapper)
 	{
-		_userManager = userManager;
 		_tokenService = tokenService;
 		_userRepository = userRepository;
 		_mapper = mapper;
@@ -30,10 +28,10 @@ public class UserService : IUserService
 
 	public async Task<TokenDto> LoginAsync(LoginDto loginModel)
 	{
-		var user = await _userManager.FindByNameAsync(loginModel.UserName!) 
+		var user = await _userRepository.FindByNameAsync(loginModel.UserName!) 
 			?? throw new ApiException("User name and/or password are incorrect", ApiException.NotFound);
 	
-		var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginModel.Password!);
+		var isPasswordValid = await _userRepository.CheckPasswordAsync(user, loginModel.Password!);
 	
 		if (!isPasswordValid)
 		{
@@ -63,13 +61,13 @@ public class UserService : IUserService
 			throw new ApiException("email, phone number or user name is reserved", ApiException.BadRequest);
 		
 		var password = GenerateRandom();
-		await HandleIdentityResultAsync(_userManager.CreateAsync(user, password));
+		await HandleIdentityResultAsync(_userRepository.CreateAsync(user, password));
 		
-		await HandleIdentityResultAsync(_userManager.AddToRoleAsync(user, registerDto.Role!));
+		await HandleIdentityResultAsync(_userRepository.AddToRoleAsync(user, registerDto.Role!));
 		//send to mail password;
 		
 		var userDto = _mapper.Map<UserDto>(user);
-		userDto.Role = (await _userManager.GetRolesAsync(user)).First();
+		userDto.Role = (await _userRepository.GetRolesAsync(user)).First();
 	
 		return userDto;
 	}
@@ -89,9 +87,9 @@ public class UserService : IUserService
 		if (_userRepository.DoesItExist(user))
 			throw new ApiException("email, phone number or user name is reserved", ApiException.BadRequest);
 		
-		await HandleIdentityResultAsync(_userManager.CreateAsync(user, signupDto.Password!));
+		await HandleIdentityResultAsync(_userRepository.CreateAsync(user, signupDto.Password!));
 			
-		await _userManager.AddToRoleAsync(user, Role.Client);
+		await _userRepository.AddToRoleAsync(user, Role.Client);
 		
 		var tokenDto = await LoginAsync(_mapper.Map<LoginDto>(signupDto));
 
@@ -117,11 +115,11 @@ public class UserService : IUserService
 			if (userRole != Role.Admin && userRole != Role.Manager)
 				throw new ApiException("Not Found", ApiException.NotFound);
 			
-		var user = await _userManager.FindByIdAsync(id!) 
+		var user = await _userRepository.FindByIdAsync(id!) 
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 			
 		var userDto = _mapper.Map<UserDto>(user);
-		userDto.Role = (await _userManager.GetRolesAsync(user)).First();
+		userDto.Role = (await _userRepository.GetRolesAsync(user)).First();
 		
 		return userDto;
 	}
@@ -131,17 +129,17 @@ public class UserService : IUserService
 		if (id is null)
 		 	throw new ApiException("Unauthorized", ApiException.Unauthorized);
 		
-		var user = await _userManager.FindByIdAsync(id)
+		var user = await _userRepository.FindByIdAsync(id)
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 
 		user.Email = userUpdateDto.Email;
 		user.PhoneNumber = userUpdateDto.PhoneNumber;
 		user.UserName = userUpdateDto.UserName;
 		
-		await HandleIdentityResultAsync(_userManager.UpdateAsync(user));
+		await HandleIdentityResultAsync(_userRepository.UpdateAsync(user));
 
 		var userDto = _mapper.Map<UserDto>(user);
-		userDto.Role = (await _userManager.GetRolesAsync(user)).First();
+		userDto.Role = (await _userRepository.GetRolesAsync(user)).First();
 		
 		return userDto;
 	}
@@ -151,10 +149,10 @@ public class UserService : IUserService
 		if (id is null)
 			throw new ApiException("Unauthorized", ApiException.Unauthorized);
 
-		var user = await _userManager.FindByIdAsync(id)
+		var user = await _userRepository.FindByIdAsync(id)
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 
-		await HandleIdentityResultAsync(_userManager.ChangePasswordAsync(user, passwordDto.OldPassword!, passwordDto.NewPassword!));
+		await HandleIdentityResultAsync(_userRepository.ChangePasswordAsync(user, passwordDto.OldPassword!, passwordDto.NewPassword!));
 	}
 	
 	public async Task DeleteAsync(string? id, string? userRole)
@@ -165,10 +163,10 @@ public class UserService : IUserService
 		if (id is null)
 			throw new ApiException("BadRequest", ApiException.BadRequest);
 
-		var user = await _userManager.FindByIdAsync(id)
+		var user = await _userRepository.FindByIdAsync(id)
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 
-		await HandleIdentityResultAsync(_userManager.DeleteAsync(user));		
+		await HandleIdentityResultAsync(_userRepository.DeleteAsync(user));		
 	}
 	
 	private async Task HandleIdentityResultAsync(Task<IdentityResult> taskResult)

@@ -8,19 +8,18 @@ using Identity.Business.Extensions;
 using Identity.Business.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Identity.DataAccess.Interfaces;
 
 namespace Identity.Business.Services;
 
 public class TokenService: ITokenService
 {
 	private readonly IConfiguration _configuration;
-	private UserManager<IdentityUser<long>> _userManager;
-	public TokenService
-		(IConfiguration configuration, 
-		UserManager<IdentityUser<long>> userManager)
+	private readonly IUserRepository _userRepository;
+	public TokenService(IConfiguration configuration, IUserRepository userRepository)
 	{
 		_configuration = configuration;
-		_userManager = userManager;		
+		_userRepository = userRepository;
 	}
 	
 	private async Task<List<Claim>> GetClaimsAsync(IdentityUser<long> user)
@@ -31,7 +30,7 @@ public class TokenService: ITokenService
 			new Claim(JwtRegisteredClaimNames.Name, user.UserName!),
 		};
 
-		var role = (await _userManager.GetRolesAsync(user)).First();
+		var role = (await _userRepository.GetRolesAsync(user)).First();
 		claims.Add(new Claim(ClaimTypes.Role, role));
 
 		return claims;
