@@ -7,8 +7,6 @@ using AutoMapper;
 using Identity.DataAccess.Specifications;
 using Identity.Business.Exceptions;
 using System.Security.Cryptography;
-using Identity.Business.Validators;
-using FluentValidation;
 
 namespace Identity.Business.Services;
 
@@ -32,11 +30,9 @@ public class UserService : IUserService
 
 	public async Task<TokenDto> LoginAsync(LoginDto loginModel)
 	{
-		var validator = new LoginValidator();		
-		await validator.ValidateAndThrowAsync(loginModel);	
-		
 		var user = await _userManager.FindByNameAsync(loginModel.UserName!) 
 			?? throw new ApiException("User name and/or password are incorrect", ApiException.NotFound);
+	
 		var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginModel.Password!);
 	
 		if (!isPasswordValid)
@@ -55,9 +51,6 @@ public class UserService : IUserService
 
 	public async Task<UserDto> RegisterAsync(RegisterDto registerDto, string? receptionistRole)
 	{
-		var validator = new RegisterValidator();
-		await validator.ValidateAndThrowAsync(registerDto);
-		
 		if (receptionistRole != Role.Manager && receptionistRole != Role.Admin)
 			throw new ApiException("Unauthorized", ApiException.Unauthorized);
 		
@@ -91,9 +84,6 @@ public class UserService : IUserService
 
 	public async Task<TokenDto> SignUpAsync(SignupDto signupDto)
 	{
-		var validator = new SignupValidator();
-		await validator.ValidateAndThrowAsync(signupDto);
-			
 		var user = _mapper.Map<IdentityUser<long>>(signupDto);
 
 		if (_userRepository.DoesItExist(user))
@@ -138,9 +128,6 @@ public class UserService : IUserService
 
 	public async Task<UserDto> UpdateAsync(string? id, UserUpdateDto userUpdateDto)
 	{
-		var validator = new UserUpdateValidator();
-		await validator.ValidateAndThrowAsync(userUpdateDto);
-		
 		if (id is null)
 		 	throw new ApiException("Unauthorized", ApiException.Unauthorized);
 		
@@ -161,9 +148,6 @@ public class UserService : IUserService
 	
 	public async Task UpdatePasswordAsync(string? id, PasswordDto passwordDto)
 	{
-		var validator = new PasswordValidator();
-		await validator.ValidateAndThrowAsync(passwordDto);
-		
 		if (id is null)
 			throw new ApiException("Unauthorized", ApiException.Unauthorized);
 

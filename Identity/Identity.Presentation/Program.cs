@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Identity.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Identity.Business.DTOs;
+using Identity.Business.Validators;
 
 
 
@@ -27,6 +31,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
+builder.Services.AddScoped<IValidator<PasswordDto>, PasswordValidator>();
+builder.Services.AddScoped<IValidator<RegisterDto>, RegisterValidator>();
+builder.Services.AddScoped<IValidator<SignupDto>, SignupValidator>();
+builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
 
 builder.Services.AddIdentityService(builder.Configuration);
 
