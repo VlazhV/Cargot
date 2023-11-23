@@ -31,7 +31,8 @@ builder.Services.ConfigureValidation();
 builder.Services.AddIdentityService(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerServices();
 
 var app = builder.Build();
 

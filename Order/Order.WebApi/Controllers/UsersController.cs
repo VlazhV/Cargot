@@ -43,6 +43,7 @@ public class UsersController: ControllerBase
 		return NoContent();
 	}
 	
+	[HttpPut("{id}")]
 	public async Task<ActionResult<GetUserDto>> UpdateAsync(long id, [FromBody] UpdateUserDto userDto)
 	{
 		return Ok(await _userService.UpdateAsync(id, userDto));
