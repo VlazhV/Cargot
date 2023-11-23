@@ -1,4 +1,6 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Order.Infrastructure.Data;
 using Order.Infrastructure.Interfaces;
 
@@ -12,11 +14,18 @@ public class OrderRepository : IOrderRepository
 	{
 		_db = db;
 	}
-	
+
+	public async Task ClearPayloadListAsync(Domain.Entities.Order order)
+	{
+		_db.Payloads.RemoveRange(order.Payloads);		
+		await _db.SaveChangesAsync();		
+	}
+
 	public async Task<Domain.Entities.Order> CreateAsync(Domain.Entities.Order entity)
 	{
 		var entry = await _db.Orders.AddAsync(entity);
 		await _db.SaveChangesAsync();
+		
 		return entry.Entity;
 	}
 
@@ -44,10 +53,25 @@ public class OrderRepository : IOrderRepository
 			.FirstOrDefaultAsync(o => o.Id == id);
 	}
 
+	public async Task<Domain.Entities.Order?> SetStatusAsync(Domain.Entities.Order order, string status)
+	{
+		var statusEntity = await _db.OrderStatuses.FirstOrDefaultAsync(s => s.Name.Equals(status));
+
+		if (statusEntity is null)
+			return null;
+
+		order.OrderStatus = statusEntity;
+		var entry = _db.Orders.Update(order);
+		await _db.SaveChangesAsync();
+
+		return entry.Entity;
+	}
+
 	public async Task<Domain.Entities.Order> UpdateAsync(Domain.Entities.Order entity)
 	{
 		var entry = _db.Orders.Update(entity);
 		await _db.SaveChangesAsync();
+		
 		return entry.Entity;
 	}
 
