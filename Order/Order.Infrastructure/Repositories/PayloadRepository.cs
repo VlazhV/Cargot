@@ -32,6 +32,7 @@ public class PayloadRepository : IPayloadRepository
 	{
 		return await _db.Payloads
 			.Include(p => p.Order)
+			.AsNoTracking()
 			.ToListAsync();
 	}
 
@@ -39,6 +40,7 @@ public class PayloadRepository : IPayloadRepository
 	{
 		return await _db.Payloads
 			.Include(p => p.Order)
+			.AsNoTracking()
 			.FirstOrDefaultAsync();
 	}
 

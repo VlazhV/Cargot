@@ -41,6 +41,7 @@ public class OrderRepository : IOrderRepository
 			.Include(o => o.Payloads)
 			.Include(o => o.Client)
 			.Include(o => o.OrderStatus)
+			.AsNoTracking()
 			.ToListAsync();
 	}
 
@@ -50,6 +51,7 @@ public class OrderRepository : IOrderRepository
 			.Include(o => o.Payloads)
 			.Include(o => o.Client)
 			.Include(o => o.OrderStatus)
+			.AsNoTracking()
 			.FirstOrDefaultAsync(o => o.Id == id);
 	}
 
