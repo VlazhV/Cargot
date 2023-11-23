@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Order.Domain.Entities;
 
@@ -16,11 +17,7 @@ public class DatabaseContext: DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.Entity<OrderStatus>()
-			.HasData(
-				new OrderStatus { Id = 1, Name = OrderStatus.Processing },
-				new OrderStatus { Id = 2, Name = OrderStatus.Accepted },
-				new OrderStatus { Id = 3, Name = OrderStatus.Declined }
-			);
+		base.OnModelCreating(modelBuilder);
+		modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 	}
 }
