@@ -19,7 +19,7 @@ public class AutoMapperProfile: Profile
 
 		CreateMap<Domain.Entities.Order, GetOrderInfoDto>();
 		CreateMap<Payload, GetPayloadOrderDto>();
-		CreateMap<User, GetUserOrdersDto>();
+		CreateMap<User, GetUserInfoDto>();
 
 		CreateMap<UpdateOrderDto, Domain.Entities.Order>();		
 	}

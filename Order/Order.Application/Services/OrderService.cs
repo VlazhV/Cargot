@@ -41,8 +41,7 @@ public class OrderService: IOrderService
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
 
-		await _orderRepository.DeleteAsync(order);
-		return;		
+		await _orderRepository.DeleteAsync(order);		
 	}
 
 	public async Task<IEnumerable<GetOrderInfoDto>> GetAllAsync()
