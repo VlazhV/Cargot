@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Order.Application.DTOs.OrderDTOs;
 using Order.Application.DTOs.PayloadDTOs;
+using Order.Application.DTOs.UserDTOs;
 using Order.Application.Interfaces;
 using Order.Application.Services;
 using Order.Application.Validators;
@@ -16,12 +17,14 @@ public static class Startup
 	{
 		services.AddScoped<IOrderService, OrderService>();
 		services.AddScoped<IPayloadService, PayloadService>();
+		services.AddScoped<IUserService, UserService>();
 	}
 	
 	public static void ConfigureRepositories(this IServiceCollection services)
 	{
 		services.AddScoped<IOrderRepository, OrderRepository>();
 		services.AddScoped<IPayloadRepository, PayloadRepository>();
+		services.AddScoped<IUserRepository, UserRepository>();
 	}
 	
 	public static void ConfigureValidation(this IServiceCollection services)
@@ -30,5 +33,6 @@ public static class Startup
 
 		services.AddScoped<IValidator<UpdateOrderDto>, UpdateOrderValidator>();
 		services.AddScoped<IValidator<UpdatePayloadDto>, UpdatePayloadValidator>();
+		services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();
 	}
 }
