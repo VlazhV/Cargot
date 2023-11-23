@@ -18,6 +18,7 @@ public class PayloadRepository : IPayloadRepository
 	{
 		var entry = await _db.Payloads.AddAsync(entity);
 		await _db.SaveChangesAsync();
+		
 		return entry.Entity;
 	}
 
@@ -45,6 +46,7 @@ public class PayloadRepository : IPayloadRepository
 	{
 		var entry = _db.Payloads.Update(entity);
 		await _db.SaveChangesAsync();
+
 		return entry.Entity;
 	}
 
