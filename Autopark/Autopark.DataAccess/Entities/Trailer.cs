@@ -1,6 +1,6 @@
 namespace Autopark.DataAccess.Entities;
 
-public class Trailer
+public class Trailer: ISchedulable<TrailerInShipSchedule>
 {
 	public int Id { get; set; }
 	public string LicenseNumber { get; set; } = null!;
@@ -14,5 +14,5 @@ public class Trailer
 	public Autopark Autopark { get; set; } = null!;
 	public int AutoparkId { get; set; }
 
-	public List<TrailerInShipShedule> Shedules { get; set; } = null!;
+	public List<TrailerInShipSchedule> Schedules { get; set; } = null!;
 }

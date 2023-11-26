@@ -1,6 +1,7 @@
+
 namespace Autopark.DataAccess.Entities;
 
-public class Car
+public class Car : ISchedulable<CarInShipSchedule>
 {
 	public int Id{ get; set; }
 	public string LicenseNumber { get; set; } = null!;
@@ -16,5 +17,5 @@ public class Car
 	public Autopark Autopark { get; set; } = null!;
 	public int AutoparkId { get; set; }
 
-	public List<CarInShipShedule> Shedules { get; set; } = null!;
+	public List<CarInShipSchedule> Schedules { get; set; } = null!;    
 }

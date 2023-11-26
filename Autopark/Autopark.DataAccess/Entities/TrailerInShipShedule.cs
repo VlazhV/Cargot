@@ -1,6 +1,6 @@
 namespace Autopark.DataAccess.Entities;
 
-public class TrailerInShipShedule
+public class TrailerInShipSchedule: ISchedule
 {
 	public int Id { get; set; }
 	
