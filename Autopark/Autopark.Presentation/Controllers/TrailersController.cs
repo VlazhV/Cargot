@@ -29,7 +29,7 @@ public class TrailersController : ControllerBase
 	}
 	
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<GetTrailerAutoparkDto>>> GetWithSpecsAsync(SpecDto specDto)
+	public async Task<ActionResult<IEnumerable<GetTrailerAutoparkDto>>> GetWithSpecsAsync([FromQuery] SpecDto specDto)
 	{
 		return Ok(await _trailerService.GetWithSpecsAsync(specDto));
 	}	
