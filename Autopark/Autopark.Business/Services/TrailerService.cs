@@ -54,6 +54,7 @@ public class TrailerService: ITrailerService
 	public async Task<IEnumerable<GetTrailerAutoparkDto>> GetWithSpecsAsync(SpecDto specDto)
 	{
 		var specs = new List<ISpecification<Trailer>>();
+		
 		if (specDto.FreeOnly)
 		{
 			var freeOnlySpec = new FreeOnlySpecification<Trailer, TrailerInShipSchedule>
