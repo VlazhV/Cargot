@@ -103,6 +103,6 @@ public class TrailerScheduleService: ITrailerScheduleService
 			
 		var schedules = await _scheduleRepository.GetAllOfTrailerAsync(vehicleId);
 
-		return schedules.Select(s => _mapper.Map<GetScheduleDto>(s));
+		return schedules.Select(shedule => _mapper.Map<GetScheduleDto>(shedule));
 	}
 }
