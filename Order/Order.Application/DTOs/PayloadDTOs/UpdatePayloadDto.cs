@@ -8,5 +8,5 @@ public class UpdatePayloadDto
 	public int Weight { get; set; }
 	
 	public string? Description { get; set; }
-	public int OrderId{ get; set; }
+	public long OrderId{ get; set; }
 }
