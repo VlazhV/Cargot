@@ -13,8 +13,8 @@ public static class SwaggerExtension
 			o.SwaggerDoc("v1", new OpenApiInfo
 			{
 				Version = "v1",
-				Title = "Cargot Autopark",
-				Description = "Cargot Autopark swagger",
+				Title = "Cargot Order",
+				Description = "Cargot Order swagger",
 				Contact = new OpenApiContact
 				{
 					Name = "(C) Cargot llc",
