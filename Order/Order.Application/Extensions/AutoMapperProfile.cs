@@ -21,6 +21,10 @@ public class AutoMapperProfile: Profile
 		CreateMap<Payload, GetPayloadOrderDto>();
 		CreateMap<User, GetUserInfoDto>();
 
+		CreateMap<UpdateOrderPayloadsDto, Domain.Entities.Order>();
+		CreateMap<CreatePayloadDto, UpdateOrderDto>();
+		CreateMap<CreatePayloadDto, Payload>();
+
 		CreateMap<UpdateOrderDto, Domain.Entities.Order>();		
 	}
 }
