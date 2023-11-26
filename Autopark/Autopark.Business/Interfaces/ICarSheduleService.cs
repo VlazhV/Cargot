@@ -1,5 +1,5 @@
 namespace Autopark.Business.Interfaces;
 
-public interface ICarSheduleService: ISheduleService
+public interface ICarScheduleService: IScheduleService
 {
 }

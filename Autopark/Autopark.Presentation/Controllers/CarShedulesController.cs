@@ -1,44 +1,45 @@
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Autopark.Presentation.Controllers;
 
-[Route("api/cars/shedules/{id}")]
+[Route("api/cars/schedules/{id}")]
 [ApiController]
 [Authorize(Roles = "manager, admin")]
-public class CarShedulesController : ControllerBase
+public class CarSchedulesController : ControllerBase
 {
-	private readonly ICarSheduleService _sheduleService;
+	private readonly ICarScheduleService _scheduleService;
 	
-	public CarShedulesController(ICarSheduleService sheduleService)
+	public CarSchedulesController(ICarScheduleService scheduleService)
 	{
-		_sheduleService = sheduleService;
+		_scheduleService = scheduleService;
 	}
 	
 	[HttpGet]
-	public async Task<ActionResult<GetSheduleDto>> GetSheduleAsync([FromRoute] int id)
+	public async Task<ActionResult<GetScheduleDto>> GetScheduleAsync([FromRoute] int id)
 	{
-		return Ok(await _sheduleService.GetSheduleByIdAsync(id));
+		return Ok(await _scheduleService.GetScheduleByIdAsync(id));
 	}
 	
 	[HttpPut]
-	public async Task<ActionResult<GetSheduleDto>> UpdateSheduleAsync([FromRoute] int id, UpdatePlanSheduleDto sheduleDto)
+	public async Task<ActionResult<GetScheduleDto>> UpdateScheduleAsync([FromRoute] int id, UpdatePlanScheduleDto scheduleDto)
 	{
-		return Ok(await _sheduleService.UpdatePlannedSheduleAsync(id, sheduleDto));
+		return Ok(await _scheduleService.UpdatePlannedScheduleAsync(id, scheduleDto));
 	}
 	
 	[HttpPost]
-	public async Task<ActionResult<GetSheduleDto>> UpdateActualSheduleAsync([FromRoute] int id)
+	public async Task<ActionResult<GetScheduleDto>> UpdateActualScheduleAsync([FromRoute] int id)
 	{
-		return Ok(await _sheduleService.UpdateActualSheduleAsync(id));
+		return Ok(await _scheduleService.UpdateActualScheduleAsync(id));
 	}
 	
 	[HttpDelete]
-	public async Task<ActionResult> DeleteSheduleAsync([FromRoute] int id)
+	public async Task<ActionResult> DeleteScheduleAsync([FromRoute] int id)
 	{
-		await _sheduleService.DeleteSheduleAsync(id);
-		return Ok();
+		await _scheduleService.DeleteScheduleAsync(id);
+		
+		return NoContent();
 	}
 }

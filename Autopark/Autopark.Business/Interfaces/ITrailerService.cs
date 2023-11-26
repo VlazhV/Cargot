@@ -1,5 +1,5 @@
 using Autopark.Business.DTOs;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 
 namespace Autopark.Business.Interfaces;

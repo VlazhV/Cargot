@@ -1,14 +1,14 @@
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Services;
 
 namespace Autopark.Business.Interfaces;
 
-public interface ISheduleService
+public interface IScheduleService
 {
-	Task<GetSheduleDto> GetSheduleByIdAsync(int id);
-	Task<IEnumerable<GetSheduleDto>> GetShedulesOfVehicleAsync(int vehicleId);
-	Task<GetSheduleDto> AddPlannedSheduleAsync(int vehicleId, UpdatePlanSheduleDto sheduleDto);
-	Task<GetSheduleDto> UpdatePlannedSheduleAsync(int id, UpdatePlanSheduleDto sheduleDto);
-	Task<GetSheduleDto> UpdateActualSheduleAsync(int id);
-	Task DeleteSheduleAsync(int id);	
+	Task<GetScheduleDto> GetScheduleByIdAsync(int id);
+	Task<IEnumerable<GetScheduleDto>> GetSchedulesOfVehicleAsync(int vehicleId);
+	Task<GetScheduleDto> AddPlannedScheduleAsync(int vehicleId, UpdatePlanScheduleDto scheduleDto);
+	Task<GetScheduleDto> UpdatePlannedScheduleAsync(int id, UpdatePlanScheduleDto scheduleDto);
+	Task<GetScheduleDto> UpdateActualScheduleAsync(int id);
+	Task DeleteScheduleAsync(int id);	
 }

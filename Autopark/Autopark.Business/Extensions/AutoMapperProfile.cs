@@ -1,7 +1,7 @@
 using AutoMapper;
 using Autopark.Business.DTOs.AutoparkDTOs;
 using Autopark.Business.DTOs.CarDTOs;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.DataAccess.Entities;
 
@@ -14,8 +14,8 @@ public class AutoMapperProfile: Profile
 		CreateMap<DataAccess.Entities.Autopark, GetAutoparkDto>();
 		CreateMap<Car, GetCarDto>();
 		CreateMap<Trailer, GetTrailerDto>();
-		CreateMap<CarInShipShedule, GetSheduleDto>();
-		CreateMap<TrailerInShipShedule, GetSheduleDto>();
+		CreateMap<CarInShipSchedule, GetScheduleDto>();
+		CreateMap<TrailerInShipSchedule, GetScheduleDto>();
 
 		CreateMap<Car, GetCarAutoparkDto>();
 		CreateMap<Trailer, GetTrailerAutoparkDto>();
@@ -24,8 +24,8 @@ public class AutoMapperProfile: Profile
 		CreateMap<UpdateCarDto, Car>();
 		CreateMap<UpdateTrailerDto, Trailer>();
 		CreateMap<UpdateAutoparkDto, DataAccess.Entities.Autopark>();
-		CreateMap<UpdatePlanSheduleDto, CarInShipShedule>();
-		CreateMap<UpdatePlanSheduleDto, TrailerInShipShedule>();
+		CreateMap<UpdatePlanScheduleDto, CarInShipSchedule>();
+		CreateMap<UpdatePlanScheduleDto, TrailerInShipSchedule>();
 		
 		
 	}

@@ -1,6 +1,6 @@
-namespace Autopark.Business.DTOs.SheduleDtos;
+namespace Autopark.Business.DTOs.ScheduleDtos;
 
-public class GetSheduleDto
+public class GetScheduleDto
 {
 	public int Id { get; set; }
 	

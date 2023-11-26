@@ -1,6 +1,6 @@
 using Autopark.Business.DTOs;
 using Autopark.Business.DTOs.CarDTOs;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 
 namespace Autopark.Business.Interfaces;
 

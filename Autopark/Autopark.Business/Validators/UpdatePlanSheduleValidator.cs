@@ -1,11 +1,11 @@
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using FluentValidation;
 
 namespace Autopark.Business.Validators;
 
-public class UpdatePlanSheduleValidator: AbstractValidator<UpdatePlanSheduleDto>
+public class UpdatePlanScheduleValidator: AbstractValidator<UpdatePlanScheduleDto>
 {
-	public UpdatePlanSheduleValidator()
+	public UpdatePlanScheduleValidator()
 	{
 		RuleFor(s => s.PlanStart)
 			.GreaterThan(DateTime.UtcNow);

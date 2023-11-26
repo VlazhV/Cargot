@@ -1,5 +1,5 @@
 using Autopark.Business.DTOs;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +13,12 @@ namespace Autopark.Presentation.Controllers;
 public class TrailersController : ControllerBase
 {
 	private readonly ITrailerService _trailerService;
-	private readonly ITrailerSheduleService _sheduleService;
+	private readonly ITrailerScheduleService _scheduleService;
 	
-	public TrailersController(ITrailerService trailerService, ITrailerSheduleService sheduleService)
+	public TrailersController(ITrailerService trailerService, ITrailerScheduleService scheduleService)
 	{
 		_trailerService = trailerService;
-		_sheduleService = sheduleService;
+		_scheduleService = scheduleService;
 	}
 
 		
@@ -44,7 +44,8 @@ public class TrailersController : ControllerBase
 	public async Task<ActionResult> DeleteAsync([FromRoute] int id)
 	{
 		await _trailerService.DeleteAsync(id);
-		return Ok();
+		
+		return NoContent();
 	}
 
 	[HttpPut("{id}")]
@@ -53,16 +54,16 @@ public class TrailersController : ControllerBase
 		return Ok(await _trailerService.UpdateAsync(id, trailerDto));
 	}	
 	
-	[HttpPost("{trailerId}/shedules")]
-	public async Task<ActionResult<GetSheduleDto>> AddSheduleAsync
-		([FromRoute] int trailerId, UpdatePlanSheduleDto sheduleDto)
+	[HttpPost("{trailerId}/schedules")]
+	public async Task<ActionResult<GetScheduleDto>> AddScheduleAsync
+		([FromRoute] int trailerId, UpdatePlanScheduleDto scheduleDto)
 	{
-		return Ok(await _sheduleService.AddPlannedSheduleAsync(trailerId, sheduleDto));
+		return Ok(await _scheduleService.AddPlannedScheduleAsync(trailerId, scheduleDto));
 	}
 	
-	[HttpGet("{trailerId}/shedules")]
-	public async Task<ActionResult<IEnumerable<GetSheduleDto>>> GetShedulesOfTrailerAsync([FromRoute] int trailerId)
+	[HttpGet("{trailerId}/schedules")]
+	public async Task<ActionResult<IEnumerable<GetScheduleDto>>> GetSchedulesOfTrailerAsync([FromRoute] int trailerId)
 	{
-		return Ok(await _sheduleService.GetShedulesOfVehicleAsync(trailerId));
+		return Ok(await _scheduleService.GetSchedulesOfVehicleAsync(trailerId));
 	}	
 }

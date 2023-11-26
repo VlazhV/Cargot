@@ -1,6 +1,6 @@
 using Autopark.Business.DTOs;
 using Autopark.Business.DTOs.CarDTOs;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +13,12 @@ namespace Autopark.Presentation.Controllers;
 public class CarsController: ControllerBase
 {
 	private readonly ICarService _carService;
-	private readonly ICarSheduleService _sheduleService;
+	private readonly ICarScheduleService _scheduleService;
 	
-	public CarsController(ICarService carService, ICarSheduleService sheduleService)
+	public CarsController(ICarService carService, ICarScheduleService scheduleService)
 	{
 		_carService = carService;
-		_sheduleService = sheduleService;
+		_scheduleService = scheduleService;
 	}
 	
 	
@@ -44,7 +44,8 @@ public class CarsController: ControllerBase
 	public async Task<ActionResult> DeleteAsync([FromRoute] int id)
 	{
 		await _carService.DeleteAsync(id);
-		return Ok();
+		
+		return NoContent();
 	}
 	
 	[HttpPut("{id}")]
@@ -53,15 +54,15 @@ public class CarsController: ControllerBase
 		return Ok(await _carService.UpdateAsync(id, carDto));	
 	}
 	
-	[HttpGet("{carId}/shedules")]
-	public async Task<ActionResult<IEnumerable<GetSheduleDto>>> GetShedulesOfCarAsync([FromRoute] int carId)
+	[HttpGet("{carId}/schedules")]
+	public async Task<ActionResult<IEnumerable<GetScheduleDto>>> GetSchedulesOfCarAsync([FromRoute] int carId)
 	{
-		return Ok(await _sheduleService.GetShedulesOfVehicleAsync(carId));
+		return Ok(await _scheduleService.GetSchedulesOfVehicleAsync(carId));
 	}
 	
-	[HttpPost("{carId}/shedules")]
-	public async Task<ActionResult<GetSheduleDto>> AddSheduleAsync([FromRoute] int carId, UpdatePlanSheduleDto sheduleDto)
+	[HttpPost("{carId}/schedules")]
+	public async Task<ActionResult<GetScheduleDto>> AddScheduleAsync([FromRoute] int carId, UpdatePlanScheduleDto scheduleDto)
 	{
-		return Ok(await _sheduleService.AddPlannedSheduleAsync(carId, sheduleDto));
+		return Ok(await _scheduleService.AddPlannedScheduleAsync(carId, scheduleDto));
 	}
 }
