@@ -40,7 +40,8 @@ public class AutoparksController : ControllerBase
 	public async Task<ActionResult> DeleteAsync([FromRoute] int id)
 	{
 		await _autoparkService.DeleteAsync(id);
-		return Ok();
+		
+		return NoContent();
 	}
 
 	[HttpPut("{id}")]
