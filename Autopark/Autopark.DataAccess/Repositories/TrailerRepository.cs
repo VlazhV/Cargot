@@ -5,71 +5,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
-public class TrailerRepository : ITrailerRepository
+public class TrailerRepository : RepositoryBase<Trailer>
 {
-	private readonly DatabaseContext _db;
-	
-	public TrailerRepository(DatabaseContext db)
-	{
-		_db = db;
-	}
-	
-	public async Task<Trailer> CreateAsync(Trailer entity)
-	{
-		var entry = await _db.Trailers.AddAsync(entity);
-		await _db.SaveChangesAsync();
-		
-		return entry.Entity;
+	public TrailerRepository(DatabaseContext db): base(db)
+	{		
 	}
 
 	public bool DoesItExist(int id)
 	{
-		return _db.Trailers.Any(t => t.Id == id);
-	}
-	
-	public async Task DeleteAsync(Trailer entity)
-	{
-		_db.Trailers.Remove(entity);
-		await _db.SaveChangesAsync();
-	}
-
-	public async Task<Trailer?> GetByIdAsync(int id)
-	{
-		var entity = await _db.Trailers
-			.Include(t => t.Autopark)
-			.FirstOrDefaultAsync(t => t.Id == id);
-
-		return entity;
-	}
-
-	public async Task<IEnumerable<Trailer>> GetAllAsync()
-	{
-		var entities = await _db.Trailers
-			.Include(t => t.Autopark)
-			.ToListAsync();
-
-		return entities;
-	}
-
-	public async Task<Trailer> UpdateAsync(Trailer entity)
-	{
-		var entry = _db.Trailers.Update(entity);
-		await _db.SaveChangesAsync();
-
-		return entry.Entity;
+		return _db.Trailers
+			.AsNoTracking()
+			.Any(t => t.Id == id);
 	}
 
 	public bool DoesItExist(string licenseNumber)
 	{
-		return _db.Trailers.Any(t => t.LicenseNumber.Equals(licenseNumber));
+		return _db.Trailers
+			.AsNoTracking()
+			.Any(t => t.LicenseNumber.Equals(licenseNumber));
 	}
 
 	public async Task<IEnumerable<Trailer>> GetWithSpecsAsync(IEnumerable<ISpecification<Trailer>> specs)
 	{
-		IQueryable<Trailer> query = _db.Trailers.Include(t => t.Autopark);
+		IQueryable<Trailer> query = _db.Trailers
+			.AsNoTracking()
+			.Include(t => t.Schedules)
+			.Include(t => t.Autopark);
+			
 		foreach (var s in specs)
+		{
 			query = s.Build(query);
-
+		}
+			
 		var entities = await query.ToListAsync();
 
 		return entities;
