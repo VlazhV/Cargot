@@ -1,104 +1,108 @@
 using AutoMapper;
-using Autopark.Business.DTOs.SheduleDtos;
+using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Interfaces;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
+using Autopark.DataAccess.Repositories;
 using Identity.Business.Exceptions;
 
 namespace Autopark.Business.Services;
 
-public class TrailerSheduleService: ITrailerSheduleService
+public class TrailerScheduleService: ITrailerScheduleService
 {
-	private readonly ITrailerInShipSheduleRepository _sheduleRepository;
-	private readonly ITrailerRepository _trailerRepository;
+	private readonly TrailerInShipScheduleRepository _scheduleRepository;
+	private readonly TrailerRepository _trailerRepository;
 	private readonly IMapper _mapper;
 	
-	public TrailerSheduleService
-		(ITrailerInShipSheduleRepository sheduleRepository,
-		ITrailerRepository trailerRepository,
+	public TrailerScheduleService
+		(TrailerInShipScheduleRepository scheduleRepository,
+		TrailerRepository trailerRepository,
 		IMapper mapper)
 	{
-		_sheduleRepository = sheduleRepository;
+		_scheduleRepository = scheduleRepository;
 		_trailerRepository = trailerRepository;
 		_mapper = mapper;
 	}
 	
-	public async Task<GetSheduleDto> AddPlannedSheduleAsync(int vehicleId, UpdatePlanSheduleDto sheduleDto)
+	public async Task<GetScheduleDto> AddPlannedScheduleAsync(int vehicleId, UpdatePlanScheduleDto scheduleDto)
 	{
 		if (!_trailerRepository.DoesItExist(vehicleId))
 		{
 			throw new ApiException("Trailer not found", ApiException.NotFound);	
 		}
 		
-		var shedule = _mapper.Map<TrailerInShipShedule>(sheduleDto);
-		shedule.TrailerId = vehicleId;
+		var schedule = _mapper.Map<TrailerInShipSchedule>(scheduleDto);
+		schedule.TrailerId = vehicleId;
 
-		shedule = await _sheduleRepository.CreateAsync(shedule);
+		schedule = await _scheduleRepository.CreateAsync(schedule);
+		await _scheduleRepository.SaveChangesAsync();
 		
-		return _mapper.Map<GetSheduleDto>(shedule);
+		return _mapper.Map<GetScheduleDto>(schedule);
 	}
 	
-	public async Task<GetSheduleDto> UpdatePlannedSheduleAsync(int sheduleId, UpdatePlanSheduleDto sheduleDto)
+	public async Task<GetScheduleDto> UpdatePlannedScheduleAsync(int scheduleId, UpdatePlanScheduleDto scheduleDto)
 	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
+		var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+			?? throw new ApiException("Schedule not found", ApiException.NotFound);
 
-		shedule.PlanStart = sheduleDto.PlanStart;
-		shedule.PlanFinish = sheduleDto.PlanFinish;		
+		schedule.PlanStart = scheduleDto.PlanStart;
+		schedule.PlanFinish = scheduleDto.PlanFinish;		
 		
-		shedule = await _sheduleRepository.UpdateAsync(shedule);	
+		schedule = _scheduleRepository.Update(schedule);
+		await _scheduleRepository.SaveChangesAsync();
 		
-		return _mapper.Map<GetSheduleDto>(shedule);
+		return _mapper.Map<GetScheduleDto>(schedule);
 	}
 
-	public async Task<GetSheduleDto> UpdateActualSheduleAsync(int sheduleId)
+	public async Task<GetScheduleDto> UpdateActualScheduleAsync(int scheduleId)
 	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
+		var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+			?? throw new ApiException("Schedule not found", ApiException.NotFound);
 
-		if (shedule.Start is null)
+		switch (schedule.Start)
 		{
-			shedule.Start = DateTime.UtcNow;		
-		}					
-		else if (shedule.Finish is null)
-		{
-			shedule.Finish = DateTime.UtcNow;
-		}					
-		else
-		{
-			throw new ApiException("Shedule is filled", ApiException.BadRequest);
+			case null:
+				schedule.Start = DateTime.UtcNow;
+				break;
+			case not null when schedule.Finish is null:
+				schedule.Finish = DateTime.UtcNow;
+				break;
+			default:
+				throw new ApiException("Schedule is filled", ApiException.BadRequest);
 		}
 			
-		shedule = await _sheduleRepository.UpdateAsync(shedule);
+		schedule = _scheduleRepository.Update(schedule);
+		await _scheduleRepository.SaveChangesAsync();
 
-		return _mapper.Map<GetSheduleDto>(shedule);
+		return _mapper.Map<GetScheduleDto>(schedule);
 	}
 	
-	public async Task DeleteSheduleAsync(int sheduleId)
+	public async Task DeleteScheduleAsync(int scheduleId)
 	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
+		var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+			?? throw new ApiException("Schedule not found", ApiException.NotFound);
 
-		await _sheduleRepository.DeleteAsync(shedule);				
+		_scheduleRepository.Delete(schedule);
+		await _scheduleRepository.SaveChangesAsync();
 	}
 
-	public async Task<GetSheduleDto> GetSheduleByIdAsync(int sheduleId)
+	public async Task<GetScheduleDto> GetScheduleByIdAsync(int scheduleId)
 	{
-		var shedule = await _sheduleRepository.GetByIdAsync(sheduleId)
-			?? throw new ApiException("Shedule not found", ApiException.NotFound);
+		var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+			?? throw new ApiException("Schedule not found", ApiException.NotFound);
 
-		return _mapper.Map<GetSheduleDto>(shedule);		
+		return _mapper.Map<GetScheduleDto>(schedule);		
 	}
 
-	public async Task<IEnumerable<GetSheduleDto>> GetShedulesOfVehicleAsync(int vehicleId)
+	public async Task<IEnumerable<GetScheduleDto>> GetSchedulesOfVehicleAsync(int vehicleId)
 	{
 		if (!_trailerRepository.DoesItExist(vehicleId))
 		{
 			throw new ApiException("Trailer not found", ApiException.NotFound);	
 		}			
 			
-		var shedules = await _sheduleRepository.GetAllOfTrailerAsync(vehicleId);
+		var schedules = await _scheduleRepository.GetAllOfTrailerAsync(vehicleId);
 
-		return shedules.Select(s => _mapper.Map<GetSheduleDto>(s));
+		return schedules.Select(s => _mapper.Map<GetScheduleDto>(s));
 	}
 }

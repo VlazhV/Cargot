@@ -1,31 +1,28 @@
 using AutoMapper;
 using Autopark.Business.DTOs;
-using Autopark.Business.DTOs.SheduleDtos;
 using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.Business.Interfaces;
-using Autopark.Business.Validators;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
+using Autopark.DataAccess.Repositories;
 using Autopark.DataAccess.Specifications;
-using FluentValidation;
 using Identity.Business.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.Business.Services;
 
 public class TrailerService: ITrailerService
 {
-	private readonly ITrailerRepository _trailerRepository;
-	private readonly ITrailerInShipSheduleRepository _sheduleRepository;
+	private readonly TrailerRepository _trailerRepository;
+	private readonly TrailerInShipScheduleRepository _scheduleRepository;
 	private readonly IMapper _mapper;
 	
 	public TrailerService
-		(ITrailerRepository trailerRepository, 
-		ITrailerInShipSheduleRepository sheduleRepository,
+		(TrailerRepository trailerRepository, 
+		TrailerInShipScheduleRepository scheduleRepository,
 		IMapper mapper)
 	{
 		_trailerRepository = trailerRepository;
-		_sheduleRepository = sheduleRepository;
+		_scheduleRepository = scheduleRepository;
 		_mapper = mapper;
 	}
 
@@ -40,6 +37,7 @@ public class TrailerService: ITrailerService
 			
 		var trailer = _mapper.Map<Trailer>(trailerDto);
 		trailer = await _trailerRepository.CreateAsync(trailer);
+		await _trailerRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetTrailerDto>(trailer);
 	}
@@ -49,7 +47,8 @@ public class TrailerService: ITrailerService
 		var trailer = await _trailerRepository.GetByIdAsync(id)
 			?? throw new ApiException("Trailer not found", ApiException.NotFound);
 
-		await _trailerRepository.DeleteAsync(trailer);
+		_trailerRepository.Delete(trailer);
+		await _trailerRepository.SaveChangesAsync();
 	}
 
 	public async Task<IEnumerable<GetTrailerAutoparkDto>> GetWithSpecsAsync(SpecDto specDto)
@@ -57,15 +56,15 @@ public class TrailerService: ITrailerService
 		var specs = new List<ISpecification<Trailer>>();
 		if (specDto.FreeOnly)
 		{
-			specs.Add(
-				new FreeOnlyTrailerSpecification
-					(specDto.Start.GetValueOrDefault(), specDto.Finish.GetValueOrDefault())
-			);
+			var freeOnlySpec = new FreeOnlySpecification<Trailer, TrailerInShipSchedule>
+					(specDto.Start.GetValueOrDefault(), specDto.Finish.GetValueOrDefault());
+			
+			specs.Add(freeOnlySpec);
 		}		
 		
 		var trailers = await _trailerRepository.GetWithSpecsAsync(specs);
 
-		return trailers.Select(t => _mapper.Map<GetTrailerAutoparkDto>(t));
+		return trailers.Select(trailer => _mapper.Map<GetTrailerAutoparkDto>(trailer));
 	}
 
 	public async Task<GetTrailerAutoparkDto> GetByIdAsync(int id)
@@ -91,7 +90,8 @@ public class TrailerService: ITrailerService
 		var trailer = _mapper.Map<Trailer>(trailerDto);
 		trailer.Id = id;
 
-		trailer = await _trailerRepository.UpdateAsync(trailer);	
+		trailer = _trailerRepository.Update(trailer);
+		await _trailerRepository.SaveChangesAsync();
 		
 		return _mapper.Map<GetTrailerDto>(trailer);
 	}

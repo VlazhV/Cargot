@@ -1,32 +1,28 @@
-using System.Threading.Tasks;
 using AutoMapper;
 using Autopark.Business.DTOs;
 using Autopark.Business.DTOs.CarDTOs;
-using Autopark.Business.DTOs.SheduleDtos;
 using Autopark.Business.Interfaces;
-using Autopark.Business.Validators;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
+using Autopark.DataAccess.Repositories;
 using Autopark.DataAccess.Specifications;
-using FluentValidation;
 using Identity.Business.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.Business.Services;
 
 public class CarService : ICarService
 {
-	private readonly ICarRepository _carRepository;
-	private readonly ICarInShipSheduleRepository _sheduleRepository;
+	private readonly CarRepository _carRepository;
+	private readonly CarInShipScheduleRepository _scheduleRepository;
 	private readonly IMapper _mapper;
 	
 	public CarService
-		(ICarRepository carRepository, 
-		ICarInShipSheduleRepository sheduleRepository,
+		(CarRepository carRepository, 
+		CarInShipScheduleRepository scheduleRepository,
 		IMapper mapper)
 	{
 		_carRepository = carRepository;
-		_sheduleRepository = sheduleRepository;
+		_scheduleRepository = scheduleRepository;
 		_mapper = mapper;
 	}
 
@@ -37,10 +33,11 @@ public class CarService : ICarService
 		{
 			throw new ApiException("license number is reserved", ApiException.BadRequest);
 		}
-			
-			
+						
 		var car = _mapper.Map<Car>(carDto);
+		
 		car = await _carRepository.CreateAsync(car);
+		await _carRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetCarDto>(car);
 	}
@@ -50,23 +47,27 @@ public class CarService : ICarService
 		var car = await _carRepository.GetByIdAsync(id)
 			?? throw new ApiException("Car not found", ApiException.NotFound);
 
-		await _carRepository.DeleteAsync(car);		
+		_carRepository.Delete(car);
+		await _carRepository.SaveChangesAsync();
 	}
 
 	public async Task<IEnumerable<GetCarAutoparkDto>> GetWithSpecsAsync(SpecDto specDto)
 	{
 		List<ISpecification<Car>> specs = new();
+
+		ISchedulable<CarInShipSchedule> x = new Car();
+		
 		if (specDto.FreeOnly)
 		{
-			specs.Add(
-				new FreeOnlyCarSpecification
-					(specDto.Start.GetValueOrDefault(), specDto.Finish.GetValueOrDefault())
-			);
+			var freeOnlyCarSpec = new FreeOnlySpecification<Car, CarInShipSchedule>
+				(specDto.Start.GetValueOrDefault(), specDto.Finish.GetValueOrDefault());
+				
+			specs.Add(freeOnlyCarSpec);
 		}
 		
 		var cars = await _carRepository.GetWithSpecsAsync(specs);
 		
-		return cars.Select(c => _mapper.Map<GetCarAutoparkDto>(c));
+		return cars.Select(car => _mapper.Map<GetCarAutoparkDto>(car));
 	}
 
 	public async Task<GetCarAutoparkDto> GetByIdAsync(int id)
@@ -92,7 +93,8 @@ public class CarService : ICarService
 		var car = _mapper.Map<Car>(carDto);
 		car.Id = id;
 
-		car = await _carRepository.UpdateAsync(car);	
+		car = _carRepository.Update(car);
+		await _carRepository.SaveChangesAsync();
 		
 		return _mapper.Map<GetCarDto>(car);
 	}	
