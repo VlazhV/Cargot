@@ -31,7 +31,7 @@ public class OrdersController: ControllerBase
 	}
 	
 	[HttpPost]
-	public async Task<ActionResult<GetOrderDto>> CreateAsync([FromBody] UpdateOrderDto orderDto)
+	public async Task<ActionResult<GetOrderDto>> CreateAsync([FromBody] UpdateOrderPayloadsDto orderDto)
 	{
 		return Ok(await _orderService.CreateAsync(orderDto));
 	}
