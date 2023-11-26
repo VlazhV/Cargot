@@ -26,13 +26,14 @@ public class OrderService: IOrderService
 		_mapper = mapper;
 	}
 
-	public async Task<GetOrderDto> CreateAsync(UpdateOrderDto orderDto)
+	public async Task<GetOrderDto> CreateAsync(UpdateOrderPayloadsDto orderDto)
 	{
 		var order = _mapper.Map<Domain.Entities.Order>(orderDto);
+		order.OrderStatusId = OrderStatus.Processing.Id;
 		order.Time = DateTime.UtcNow;
 		
 		order = await _orderRepository.CreateAsync(order);
-
+		
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
@@ -67,7 +68,7 @@ public class OrderService: IOrderService
 		order = await _orderRepository.SetStatusAsync(order, status.ToLower())
 			?? throw new ApiException("Incorrect orderStatus", ApiException.BadRequest);
 			
-		if (status == OrderStatus.Accepted)
+		if (status.Equals(OrderStatus.Accepted.Name))
 		{
 			order.AcceptTime = DateTime.UtcNow;
 
