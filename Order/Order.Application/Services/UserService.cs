@@ -3,7 +3,7 @@ using Order.Application.DTOs.UserDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
 using Order.Domain.Entities;
-using Order.Infrastructure.Interfaces;
+using Order.Domain.Interfaces;
 
 namespace Order.Application.Services;
 

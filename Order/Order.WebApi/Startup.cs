@@ -6,7 +6,7 @@ using Order.Application.DTOs.UserDTOs;
 using Order.Application.Interfaces;
 using Order.Application.Services;
 using Order.Application.Validators;
-using Order.Infrastructure.Interfaces;
+using Order.Domain.Interfaces;
 using Order.Infrastructure.Repositories;
 
 namespace Order.WebApi;

@@ -5,9 +5,7 @@ using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
 using Order.Domain.Entities;
-using Order.Infrastructure.Interfaces;
-using Order.Infrastructure.Repositories;
-
+using Order.Domain.Interfaces;
 namespace Order.Application.Services;
 
 public class OrderService: IOrderService
