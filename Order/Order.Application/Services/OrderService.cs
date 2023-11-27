@@ -56,7 +56,7 @@ public class OrderService : IOrderService
 
 		var order = _mapper.Map<Domain.Entities.Order>(orderDto);
 		order.ClientId = clientId;
-		order.OrderStatusId = OrderStatus.Processing.Id;
+		order.OrderStatusId = OrderStatuses.Processing.Id;
 		order.Time = DateTime.UtcNow;
 
 		order = await _orderRepository.CreateAsync(order);
@@ -117,7 +117,7 @@ public class OrderService : IOrderService
 		order = await _orderRepository.SetStatusAsync(order, status.ToLower())
 			?? throw new ApiException("Incorrect orderStatus", ApiException.BadRequest);
 
-		if (status.Equals(OrderStatus.Accepted.Name))
+		if (status.Equals(OrderStatuses.Accepted.Name))
 		{
 			order.AcceptTime = DateTime.UtcNow;
 
@@ -146,7 +146,7 @@ public class OrderService : IOrderService
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
-	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, ClaimsPrincipal user, IEnumerable<UpdatePayloadDto> payloadDtos)
+	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, ClaimsPrincipal user, IEnumerable<CreatePayloadDto> payloadDtos)
 	{
 		var role = user.FindFirst(ClaimTypes.Role)!.Value;
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -162,8 +162,10 @@ public class OrderService : IOrderService
 		await _orderRepository.ClearPayloadListAsync(order);
 		
 		foreach(var payloadDto in payloadDtos)
-		{			
-			await _payloadService.CreateAsync(payloadDto);
+		{
+			var updatePayloadDto = _mapper.Map<UpdatePayloadDto>(payloadDto);
+			updatePayloadDto.OrderId = id;
+			await _payloadService.CreateAsync(updatePayloadDto);
 		}
 
 		order = await _orderRepository.GetByIdAsync(id);

@@ -45,7 +45,7 @@ public class OrdersController: ControllerBase
 	
 	[HttpPatch("{id}")]
 	public async Task<ActionResult<GetOrderInfoDto>> UpdatePayloadListAsync
-		(long id, [FromBody] IEnumerable<UpdatePayloadDto> payloadDtos)
+		(long id, [FromBody] IEnumerable<CreatePayloadDto> payloadDtos)
 	{
 		return Ok(await _orderService.UpdatePayloadListAsync(id, User, payloadDtos));
 	}
