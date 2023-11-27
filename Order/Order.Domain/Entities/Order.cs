@@ -1,4 +1,3 @@
-using System.Globalization;
 namespace Order.Domain.Entities;
 
 public class Order
