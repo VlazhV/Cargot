@@ -18,6 +18,7 @@ public class PayloadsController: ControllerBase
 	}
 	
 	[HttpGet]
+	[Authorize(Roles = "admin, manager")]
 	public async Task<ActionResult<IEnumerable<GetPayloadOrderDto>>> GetAllAsync()
 	{
 		return Ok(await _payloadService.GetAllAsync());
@@ -26,19 +27,19 @@ public class PayloadsController: ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<GetPayloadOrderDto>> GetByIdAsync(long id)
 	{
-		return Ok(await _payloadService.GetByIdAsync(id));		
+		return Ok(await _payloadService.GetByIdAsync(id, User));		
 	}
 	
 	[HttpPut("{id}")]
 	public async Task<ActionResult<GetPayloadDto>> UpdateAsync(long id, UpdatePayloadDto payloadDto)
 	{
-		return Ok(await _payloadService.UpdateAsync(id, payloadDto));
+		return Ok(await _payloadService.UpdateAsync(id, User, payloadDto));
 	}
 	
 	[HttpDelete("{id}")]
 	public async Task<ActionResult> DeleteAsync(long id)
 	{
-		await _payloadService.DeleteAsync(id);
+		await _payloadService.DeleteAsync(id, User);
 
 		return NoContent();
 	}
