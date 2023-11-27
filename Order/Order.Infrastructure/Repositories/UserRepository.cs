@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Order.Domain.Entities;
 using Order.Infrastructure.Data;
-using Order.Infrastructure.Interfaces;
+using Order.Domain.Interfaces;
 
 namespace Order.Infrastructure.Repositories;
 

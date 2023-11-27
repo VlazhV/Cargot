@@ -1,8 +1,6 @@
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Order.Infrastructure.Data;
-using Order.Infrastructure.Interfaces;
+using Order.Domain.Interfaces;
 
 namespace Order.Infrastructure.Repositories;
 

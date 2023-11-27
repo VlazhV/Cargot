@@ -1,6 +1,6 @@
 using Order.Domain.Entities;
 
-namespace Order.Infrastructure.Interfaces;
+namespace Order.Domain.Interfaces;
 
 public interface IPayloadRepository: IRepository<Payload, long>
 {

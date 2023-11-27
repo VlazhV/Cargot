@@ -1,4 +1,4 @@
-namespace Order.Infrastructure.Interfaces;
+namespace Order.Domain.Interfaces;
 
 public interface IRepository<T, K>
 {
