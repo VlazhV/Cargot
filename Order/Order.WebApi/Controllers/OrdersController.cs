@@ -19,6 +19,7 @@ public class OrdersController: ControllerBase
 	}
 	
 	[HttpGet]
+	[Authorize(Roles = "admin, manager")]
 	public async Task<ActionResult<IEnumerable<GetOrderInfoDto>>> GetAllAsync()
 	{
 		return Ok(await _orderService.GetAllAsync());
@@ -27,32 +28,32 @@ public class OrdersController: ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<GetOrderInfoDto>> GetByIdAsync(long id)
 	{
-		return Ok(await _orderService.GetByIdAsync(id));
+		return Ok(await _orderService.GetByIdAsync(id, User));
 	}
 	
 	[HttpPost]
-	public async Task<ActionResult<GetOrderDto>> CreateAsync([FromBody] UpdateOrderPayloadsDto orderDto)
-	{
-		return Ok(await _orderService.CreateAsync(orderDto));
+	public async Task<ActionResult<GetOrderDto>> CreateAsync([FromQuery] long? id, [FromBody] UpdateOrderPayloadsDto orderDto)
+	{		
+		return Ok(await _orderService.CreateAsync(id, User, orderDto));
 	}
 	
 	[HttpPut("{id}")]
 	public async Task<ActionResult<GetOrderDto>> UpdateAsync(long id, [FromBody] UpdateOrderDto orderDto)
 	{
-		return Ok(await _orderService.UpdateAsync(id, orderDto));
+		return Ok(await _orderService.UpdateAsync(id, User, orderDto));
 	}
 	
 	[HttpPatch("{id}")]
 	public async Task<ActionResult<GetOrderInfoDto>> UpdatePayloadListAsync
 		(long id, [FromBody] IEnumerable<UpdatePayloadDto> payloadDtos)
 	{
-		return Ok(await _orderService.UpdatePayloadListAsync(id, payloadDtos));
+		return Ok(await _orderService.UpdatePayloadListAsync(id, User, payloadDtos));
 	}
 	
 	[HttpDelete("{id}")]
 	public async Task<ActionResult> DeleteAsync(long id)
 	{
-		await _orderService.DeleteAsync(id);
+		await _orderService.DeleteAsync(id, User);
 
 		return NoContent();
 	}

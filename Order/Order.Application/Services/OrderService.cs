@@ -1,46 +1,83 @@
 using System.Net.NetworkInformation;
+using System.Security.Claims;
 using AutoMapper;
 using Order.Application.DTOs.OrderDTOs;
 using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
+using Order.Domain.Constants;
 using Order.Domain.Entities;
 using Order.Domain.Interfaces;
 namespace Order.Application.Services;
 
-public class OrderService: IOrderService
+public class OrderService : IOrderService
 {
 	private readonly IPayloadService _payloadService;
 	private readonly IOrderRepository _orderRepository;
+	private readonly IUserRepository _userRepository;
 	private readonly IMapper _mapper;
 
 	public OrderService
 		(IPayloadService payloadService,
-		IOrderRepository orderRepository, 
+		IOrderRepository orderRepository,
+		IUserRepository userRepository,
 		IMapper mapper)
 	{
 		_payloadService = payloadService;
 		_orderRepository = orderRepository;
+		_userRepository = userRepository;
 		_mapper = mapper;
 	}
 
-	public async Task<GetOrderDto> CreateAsync(UpdateOrderPayloadsDto orderDto)
+	public async Task<GetOrderDto> CreateAsync(long? customerId, ClaimsPrincipal user, UpdateOrderPayloadsDto orderDto)
 	{
+		long clientId;
+
+		if (customerId.HasValue)
+		{
+			var role = user.FindFirst(ClaimTypes.Role)!.Value;
+			if (role == Roles.Admin || role == Roles.Manager)
+			{
+				clientId = customerId.Value;
+			}
+			else
+			{
+				throw new ApiException("No permission", ApiException.Forbidden);
+			}
+		}
+		else
+		{
+			clientId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+		}
+
+		if (!_userRepository.DoesItExist(clientId))
+		{
+			throw new ApiException("User is not found", ApiException.NotFound);
+		}
+
 		var order = _mapper.Map<Domain.Entities.Order>(orderDto);
+		order.ClientId = clientId;
 		order.OrderStatusId = OrderStatus.Processing.Id;
 		order.Time = DateTime.UtcNow;
-		
+
 		order = await _orderRepository.CreateAsync(order);
-		
+
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
-	public async Task DeleteAsync(long id)
+	public async Task DeleteAsync(long id, ClaimsPrincipal user)
 	{
+		var role = user.FindFirst(ClaimTypes.Role)!.Value;
+
+		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
 
-		await _orderRepository.DeleteAsync(order);		
+		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
+			throw new ApiException("No permission", ApiException.Forbidden);
+
+		await _orderRepository.DeleteAsync(order);
 	}
 
 	public async Task<IEnumerable<GetOrderInfoDto>> GetAllAsync()
@@ -50,22 +87,37 @@ public class OrderService: IOrderService
 		return orders.Select(o => _mapper.Map<GetOrderInfoDto>(o));
 	}
 
-	public async Task<GetOrderInfoDto> GetByIdAsync(long id)
+	public async Task<GetOrderInfoDto> GetByIdAsync(long id, ClaimsPrincipal user)
 	{
+		var role = user.FindFirst(ClaimTypes.Role)!.Value;
+		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value); 		
+		
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
+			
+		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
+		{
+			throw new ApiException("No permission", ApiException.Forbidden);
+		}
 
 		return _mapper.Map<GetOrderInfoDto>(order);
 	}
 
-	public async Task<GetOrderDto> SetStatusAsync(long id, string status)
+	public async Task<GetOrderDto> SetStatusAsync(long id, string status, ClaimsPrincipal user)
 	{
+		var role = user.FindFirst(ClaimTypes.Role)!.Value;
+
+		if (!(role == Roles.Admin || role == Roles.Manager))
+		{
+			throw new ApiException("No permission", ApiException.Forbidden);
+		}
+
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
 
 		order = await _orderRepository.SetStatusAsync(order, status.ToLower())
 			?? throw new ApiException("Incorrect orderStatus", ApiException.BadRequest);
-			
+
 		if (status.Equals(OrderStatus.Accepted.Name))
 		{
 			order.AcceptTime = DateTime.UtcNow;
@@ -76,10 +128,18 @@ public class OrderService: IOrderService
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
-	public async Task<GetOrderDto> UpdateAsync(long id, UpdateOrderDto orderDto)
+	public async Task<GetOrderDto> UpdateAsync(long id, ClaimsPrincipal user, UpdateOrderDto orderDto)
 	{
+		var role = user.FindFirst(ClaimTypes.Role)!.Value;
+		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
+
+		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
+		{
+			throw new ApiException("No permission", ApiException.Forbidden);
+		}
 
 		order = _mapper.Map(orderDto, order);
 		order = await _orderRepository.UpdateAsync(order);
@@ -87,10 +147,18 @@ public class OrderService: IOrderService
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
-	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, IEnumerable<UpdatePayloadDto> payloadDtos)
+	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, ClaimsPrincipal user, IEnumerable<UpdatePayloadDto> payloadDtos)
 	{
+		var role = user.FindFirst(ClaimTypes.Role)!.Value;
+		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
 		var order = await _orderRepository.GetByIdAsync(id)
 			?? throw new ApiException("Order is not found", ApiException.NotFound);
+
+		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
+		{
+			throw new ApiException("No permission", ApiException.Forbidden);
+		}
 
 		await _orderRepository.ClearPayloadListAsync(order);
 		
