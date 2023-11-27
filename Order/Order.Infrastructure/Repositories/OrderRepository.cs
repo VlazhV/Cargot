@@ -33,7 +33,14 @@ public class OrderRepository : IOrderRepository
 		await _db.SaveChangesAsync();
 	}
 
-	public async Task<IEnumerable<Domain.Entities.Order>> GetAllAsync()
+    public bool DoesItExist(long id)
+    {
+        return _db.Orders
+			.AsNoTracking()
+			.Any(o => o.Id == id);
+    }
+
+    public async Task<IEnumerable<Domain.Entities.Order>> GetAllAsync()
 	{
 		return await _db.Orders
 			.Include(o => o.Payloads)

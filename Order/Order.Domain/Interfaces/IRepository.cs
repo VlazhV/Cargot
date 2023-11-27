@@ -7,5 +7,5 @@ public interface IRepository<T, K>
 	Task<T> CreateAsync(T entity);
 	Task<T> UpdateAsync(T entity);
 	Task DeleteAsync(T entity);
-	
+	bool DoesItExist(K id);
 }

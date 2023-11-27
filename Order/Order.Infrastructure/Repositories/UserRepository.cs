@@ -5,10 +5,10 @@ using Order.Domain.Interfaces;
 
 namespace Order.Infrastructure.Repositories;
 
-public class UserRepository: IUserRepository
+public class UserRepository : IUserRepository
 {
 	private readonly DatabaseContext _db;
-	
+
 	public UserRepository(DatabaseContext db)
 	{
 		_db = db;
@@ -25,7 +25,21 @@ public class UserRepository: IUserRepository
 	public async Task DeleteAsync(User entity)
 	{
 		_db.Users.Remove(entity);
-		await _db.SaveChangesAsync();				
+		await _db.SaveChangesAsync();
+	}
+
+	public bool DoesItExist(long id)
+	{
+		return _db.Users
+			.AsNoTracking()
+			.Any(u => u.Id == id);
+	}
+
+	public bool DoesItExist(User user)
+	{
+		return _db.Users
+			.AsNoTracking()
+			.Any(u => u.Email.Equals(user.Email) || u.PhoneNumber.Equals(user.PhoneNumber) || u.UserName.Equals(user.UserName));
 	}
 
 	public async Task<IEnumerable<User>> GetAllAsync()

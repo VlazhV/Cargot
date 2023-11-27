@@ -21,6 +21,11 @@ public class UserService: IUserService
 	public async Task<GetUserDto> CreateAsync(UpdateUserDto userDto)
 	{
 		var user = _mapper.Map<User>(userDto);
+		
+		if (_userRepository.DoesItExist(user))
+		{
+			throw new ApiException("Email, phone number or user name is reserved", ApiException.BadRequest);	
+		}
 
 		user = await _userRepository.CreateAsync(user);
 
@@ -52,8 +57,19 @@ public class UserService: IUserService
 
 	public async Task<GetUserDto> UpdateAsync(long id, UpdateUserDto userDto)
 	{
+		if (!_userRepository.DoesItExist(id))
+		{
+			throw new ApiException("User is not found", ApiException.NotFound);
+		}
+		
 		var user = _mapper.Map<User>(userDto);
-
+		
+		if (_userRepository.DoesItExist(user))
+		{
+			throw new ApiException("email, phone number or user name is reserved", ApiException.BadRequest);
+		}
+		
+		user.Id = id;
 		user = await _userRepository.UpdateAsync(user);
 
 		return _mapper.Map<GetUserDto>(user);

@@ -28,7 +28,14 @@ public class PayloadRepository : IPayloadRepository
 		await _db.SaveChangesAsync();
 	}
 
-	public async Task<IEnumerable<Payload>> GetAllAsync()
+    public bool DoesItExist(long id)
+    {
+        return _db.Payloads
+			.AsNoTracking()
+			.Any(p => p.Id == id);
+    }
+
+    public async Task<IEnumerable<Payload>> GetAllAsync()
 	{
 		return await _db.Payloads
 			.Include(p => p.Order)
