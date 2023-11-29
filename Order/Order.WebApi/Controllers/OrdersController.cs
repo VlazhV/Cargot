@@ -57,4 +57,10 @@ public class OrdersController: ControllerBase
 
 		return NoContent();
 	}
+	
+	[HttpPut("{id}/status")]
+	public async Task<ActionResult<GetOrderDto>> SetStatusAsync(long id, [FromQuery] string status)
+	{
+		return Ok(await _orderService.SetStatusAsync(id, status, User));
+	}
 }
