@@ -60,7 +60,8 @@ public class OrderService : IOrderService
 		order.Time = DateTime.UtcNow;
 
 		order = await _orderRepository.CreateAsync(order);
-
+		order.OrderStatus = OrderStatuses.Processing;
+		
 		return _mapper.Map<GetOrderDto>(order);
 	}
 

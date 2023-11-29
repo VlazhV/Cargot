@@ -28,17 +28,18 @@ public class PayloadRepository : IPayloadRepository
 		await _db.SaveChangesAsync();
 	}
 
-    public bool DoesItExist(long id)
-    {
-        return _db.Payloads
+	public bool DoesItExist(long id)
+	{
+		return _db.Payloads
 			.AsNoTracking()
 			.Any(p => p.Id == id);
-    }
+	}
 
-    public async Task<IEnumerable<Payload>> GetAllAsync()
+	public async Task<IEnumerable<Payload>> GetAllAsync()
 	{
 		return await _db.Payloads
 			.Include(p => p.Order)
+				.ThenInclude(o => o.OrderStatus)
 			.AsNoTracking()
 			.ToListAsync();
 	}
@@ -47,6 +48,7 @@ public class PayloadRepository : IPayloadRepository
 	{
 		return await _db.Payloads
 			.Include(p => p.Order)
+				.ThenInclude(o => o.OrderStatus)
 			.AsNoTracking()
 			.FirstOrDefaultAsync();
 	}
