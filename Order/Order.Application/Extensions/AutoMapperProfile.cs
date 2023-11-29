@@ -12,7 +12,7 @@ public class AutoMapperProfile: Profile
 	{
 		CreateMap<Domain.Entities.Order, GetOrderDto>()
 			.ForMember(dest => dest.OrderStatus, 
-				o => o.MapFrom(src => src.OrderStatus.Name
+				opt => opt.MapFrom(src => src.OrderStatus.Name
 			));
 
 		CreateMap<Payload, GetPayloadDto>();
@@ -27,7 +27,8 @@ public class AutoMapperProfile: Profile
 		CreateMap<User, GetUserInfoDto>();
 
 		CreateMap<UpdateOrderPayloadsDto, Domain.Entities.Order>();
-		CreateMap<CreatePayloadDto, UpdateOrderDto>();
+		CreateMap<UpdatePayloadDto, CreatePayloadDto>();
+		CreateMap<UpdatePayloadDto, Payload>();
 		CreateMap<CreatePayloadDto, Payload>();
 		CreateMap<UpdateUserDto, User>();
 

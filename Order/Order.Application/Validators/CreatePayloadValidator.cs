@@ -3,7 +3,7 @@ using Order.Application.DTOs.PayloadDTOs;
 
 namespace Order.Application.Validators;
 
-public class CreatePayloadValidator: AbstractValidator<CreatePayloadDto>
+public class CreatePayloadValidator: AbstractValidator<UpdatePayloadDto>
 {
 	public CreatePayloadValidator()
 	{

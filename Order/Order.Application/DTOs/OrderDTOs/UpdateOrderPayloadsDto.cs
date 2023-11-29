@@ -9,5 +9,5 @@ public class UpdateOrderPayloadsDto
 	
 	public DateTime LoadTime { get; set; }
 	public DateTime DeliverTime { get; set; }
-	public List<CreatePayloadDto> Payloads { get; set; } = null!;
+	public List<UpdatePayloadDto> Payloads { get; set; } = null!;
 }

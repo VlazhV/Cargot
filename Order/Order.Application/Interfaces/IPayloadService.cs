@@ -7,7 +7,7 @@ public interface IPayloadService
 {
 	Task<GetPayloadOrderDto> GetByIdAsync(long id, ClaimsPrincipal user);
 	Task<IEnumerable<GetPayloadOrderDto>> GetAllAsync();
-	Task<GetPayloadDto> CreateAsync(UpdatePayloadDto payloadDto);
+	Task<GetPayloadDto> CreateAsync(CreatePayloadDto payloadDto);
 	Task<GetPayloadDto> UpdateAsync(long id, ClaimsPrincipal user, UpdatePayloadDto payloadDto);
 	Task DeleteAsync(long id, ClaimsPrincipal user);
 }
