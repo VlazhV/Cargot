@@ -28,6 +28,7 @@ public class UserService: IUserService
 		}
 
 		user = await _userRepository.CreateAsync(user);
+		await _userRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetUserDto>(user);
 	}
@@ -37,7 +38,8 @@ public class UserService: IUserService
 		var user = await _userRepository.GetByIdAsync(id)
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 
-		await _userRepository.DeleteAsync(user);		
+		_userRepository.Delete(user);
+		await _userRepository.SaveChangesAsync();
 	}
 
 	public async Task<IEnumerable<GetUserDto>> GetAllAsync()
@@ -70,7 +72,9 @@ public class UserService: IUserService
 		}
 		
 		user.Id = id;
-		user = await _userRepository.UpdateAsync(user);
+		user = _userRepository.Update(user);
+		
+		await _userRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetUserDto>(user);
 	}

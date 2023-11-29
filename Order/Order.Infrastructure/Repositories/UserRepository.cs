@@ -16,16 +16,14 @@ public class UserRepository : IUserRepository
 
 	public async Task<User> CreateAsync(User entity)
 	{
-		var entry = await _db.Users.AddAsync(entity);
-		await _db.SaveChangesAsync();
+		var entry = await _db.Users.AddAsync(entity);	
 
 		return entry.Entity;
 	}
 
-	public async Task DeleteAsync(User entity)
+	public void Delete(User entity)
 	{
-		_db.Users.Remove(entity);
-		await _db.SaveChangesAsync();
+		_db.Users.Remove(entity);		
 	}
 
 	public bool DoesItExist(long id)
@@ -60,12 +58,15 @@ public class UserRepository : IUserRepository
 			.FirstOrDefaultAsync(user => user.Id == id);
 	}
 
-	public async Task<User> UpdateAsync(User entity)
+	public User Update(User entity)
 	{
-		var entry = _db.Users.Update(entity);
-		await _db.SaveChangesAsync();
+		var entry = _db.Users.Update(entity);		
 
 		return entry.Entity;
 	}
 
+	public async Task SaveChangesAsync()
+	{
+		await _db.SaveChangesAsync();
+	}
 }

@@ -61,6 +61,7 @@ public class OrderService : IOrderService
 
 		order = await _orderRepository.CreateAsync(order);
 		order.OrderStatus = OrderStatuses.Processing;
+		await _orderRepository.SaveChangesAsync();
 		
 		return _mapper.Map<GetOrderDto>(order);
 	}
@@ -77,7 +78,8 @@ public class OrderService : IOrderService
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 			throw new ApiException("No permission", ApiException.Forbidden);
 
-		await _orderRepository.DeleteAsync(order);
+		_orderRepository.Delete(order);
+		await _orderRepository.SaveChangesAsync();
 	}
 
 	public async Task<IEnumerable<GetOrderInfoDto>> GetAllAsync()
@@ -122,8 +124,10 @@ public class OrderService : IOrderService
 		{
 			order.AcceptTime = DateTime.UtcNow;
 
-			order = await _orderRepository.UpdateAsync(order);
+			order = _orderRepository.Update(order);
 		}
+
+		await _orderRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetOrderDto>(order);
 	}
@@ -142,12 +146,13 @@ public class OrderService : IOrderService
 		}
 
 		order = _mapper.Map(orderDto, order);
-		order = await _orderRepository.UpdateAsync(order);
+		order = _orderRepository.Update(order);
+		await _orderRepository.SaveChangesAsync();
 
 		return _mapper.Map<GetOrderDto>(order);
 	}
 
-	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, ClaimsPrincipal user, IEnumerable<CreatePayloadDto> payloadDtos)
+	public async Task<GetOrderInfoDto> UpdatePayloadListAsync(long id, ClaimsPrincipal user, IEnumerable<UpdatePayloadDto> payloadDtos)
 	{
 		var role = user.FindFirst(ClaimTypes.Role)!.Value;
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -160,15 +165,17 @@ public class OrderService : IOrderService
 			throw new ApiException("No permission", ApiException.Forbidden);
 		}
 
-		await _orderRepository.ClearPayloadListAsync(order);
+		_orderRepository.ClearPayloadList(order);
 		
 		foreach(var payloadDto in payloadDtos)
 		{
-			var updatePayloadDto = _mapper.Map<UpdatePayloadDto>(payloadDto);
-			updatePayloadDto.OrderId = id;
-			await _payloadService.CreateAsync(updatePayloadDto);
+			var createPayloadDto = _mapper.Map<CreatePayloadDto>(payloadDto);
+			createPayloadDto.OrderId = id;
+			await _payloadService.CreateAsync(createPayloadDto);
 		}
 
+		await _orderRepository.SaveChangesAsync();
+		
 		order = await _orderRepository.GetByIdAsync(id);
 
 		return _mapper.Map<GetOrderInfoDto>(order);

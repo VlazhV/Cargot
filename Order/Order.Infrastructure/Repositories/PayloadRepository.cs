@@ -16,16 +16,14 @@ public class PayloadRepository : IPayloadRepository
 	
 	public async Task<Payload> CreateAsync(Payload entity)
 	{
-		var entry = await _db.Payloads.AddAsync(entity);
-		await _db.SaveChangesAsync();
+		var entry = await _db.Payloads.AddAsync(entity);		
 		
 		return entry.Entity;
 	}
 
-	public async Task DeleteAsync(Payload entity)
+	public void Delete(Payload entity)
 	{
-		_db.Payloads.Remove(entity);
-		await _db.SaveChangesAsync();
+		_db.Payloads.Remove(entity);		
 	}
 
 	public bool DoesItExist(long id)
@@ -50,15 +48,18 @@ public class PayloadRepository : IPayloadRepository
 			.Include(p => p.Order)
 				.ThenInclude(o => o.OrderStatus)
 			.AsNoTracking()
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(p => p.Id == id);
 	}
 
-	public async Task<Payload> UpdateAsync(Payload entity)
+	public Payload Update(Payload entity)
 	{
-		var entry = _db.Payloads.Update(entity);
-		await _db.SaveChangesAsync();
+		var entry = _db.Payloads.Update(entity);		
 
 		return entry.Entity;
 	}
 
+	public async Task SaveChangesAsync()
+	{
+		await _db.SaveChangesAsync();
+	}
 }

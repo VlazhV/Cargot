@@ -7,7 +7,7 @@ namespace Order.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "admin")]
+[Authorize(Roles = "admin, manager")]
 public class UsersController: ControllerBase
 {
 	private readonly IUserService _userService;

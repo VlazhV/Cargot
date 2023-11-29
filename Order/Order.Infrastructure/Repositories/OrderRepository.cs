@@ -13,34 +13,31 @@ public class OrderRepository : IOrderRepository
 		_db = db;
 	}
 
-	public async Task ClearPayloadListAsync(Domain.Entities.Order order)
+	public void ClearPayloadList(Domain.Entities.Order order)
 	{
-		_db.Payloads.RemoveRange(order.Payloads);		
-		await _db.SaveChangesAsync();		
+		_db.Payloads.RemoveRange(order.Payloads);				
 	}
 
 	public async Task<Domain.Entities.Order> CreateAsync(Domain.Entities.Order entity)
 	{
-		var entry = await _db.Orders.AddAsync(entity);
-		await _db.SaveChangesAsync();
+		var entry = await _db.Orders.AddAsync(entity);		
 		
 		return entry.Entity;
 	}
 
-	public async Task DeleteAsync(Domain.Entities.Order entity)
+	public void Delete(Domain.Entities.Order entity)
 	{
-		_db.Orders.Remove(entity);
-		await _db.SaveChangesAsync();
+		_db.Orders.Remove(entity);		
 	}
 
-    public bool DoesItExist(long id)
-    {
-        return _db.Orders
+	public bool DoesItExist(long id)
+	{
+		return _db.Orders
 			.AsNoTracking()
 			.Any(o => o.Id == id);
-    }
+	}
 
-    public async Task<IEnumerable<Domain.Entities.Order>> GetAllAsync()
+	public async Task<IEnumerable<Domain.Entities.Order>> GetAllAsync()
 	{
 		return await _db.Orders
 			.Include(o => o.Payloads)
@@ -69,17 +66,19 @@ public class OrderRepository : IOrderRepository
 
 		order.OrderStatus = statusEntity;
 		var entry = _db.Orders.Update(order);
-		await _db.SaveChangesAsync();
 
 		return entry.Entity;
 	}
 
-	public async Task<Domain.Entities.Order> UpdateAsync(Domain.Entities.Order entity)
+	public Domain.Entities.Order Update(Domain.Entities.Order entity)
 	{
-		var entry = _db.Orders.Update(entity);
-		await _db.SaveChangesAsync();
+		var entry = _db.Orders.Update(entity);		
 		
 		return entry.Entity;
 	}
 
+	public async Task SaveChangesAsync()
+	{
+		await _db.SaveChangesAsync();
+	}
 }

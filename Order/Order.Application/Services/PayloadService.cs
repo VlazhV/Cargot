@@ -20,7 +20,7 @@ public class PayloadService: IPayloadService
 		_mapper = mapper;
 	}
 
-	public async Task<GetPayloadDto> CreateAsync(UpdatePayloadDto payloadDto)
+	public async Task<GetPayloadDto> CreateAsync(CreatePayloadDto payloadDto)
 	{
 		var payload = _mapper.Map<Payload>(payloadDto);
 
@@ -42,7 +42,8 @@ public class PayloadService: IPayloadService
 			throw new ApiException("No permission", ApiException.Forbidden);
 		}
 
-		await _payloadRepository.DeleteAsync(payload);
+		_payloadRepository.Delete(payload);
+		await _payloadRepository.SaveChangesAsync();
 	}
 
 	public async Task<IEnumerable<GetPayloadOrderDto>> GetAllAsync()
@@ -81,12 +82,14 @@ public class PayloadService: IPayloadService
 			throw new ApiException("No permission", ApiException.Forbidden);
 		}
 		
-		payload = _mapper.Map<Payload>(payloadDto);
-		payload.Id = id;
+		var updatedPayload = _mapper.Map<Payload>(payloadDto);
+		updatedPayload.Id = id;		
+		updatedPayload.OrderId = payload.OrderId;
 
-		payload = await _payloadRepository.UpdateAsync(payload);
+		payload = _payloadRepository.Update(updatedPayload);
+		await _payloadRepository.SaveChangesAsync();
 
-		return _mapper.Map<GetPayloadDto>(payload);
+		return _mapper.Map<GetPayloadDto>(updatedPayload);
 	}
 
 }
