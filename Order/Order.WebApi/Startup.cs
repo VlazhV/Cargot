@@ -33,6 +33,8 @@ public static class Startup
 
 		services.AddScoped<IValidator<UpdateOrderDto>, UpdateOrderValidator>();
 		services.AddScoped<IValidator<UpdatePayloadDto>, UpdatePayloadValidator>();
+		services.AddScoped<IValidator<CreatePayloadDto>, CreatePayloadValidator>();
+		services.AddScoped<IValidator<UpdateOrderPayloadsDto>, UpdateOrderPayloadsValidator>();
 		services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();
 	}
 }

@@ -3,7 +3,7 @@ using Order.Application.DTOs.PayloadDTOs;
 
 namespace Order.Application.Validators;
 
-public class UpdatePayloadValidator: AbstractValidator<CreatePayloadDto>
+public class UpdatePayloadValidator: AbstractValidator<UpdatePayloadDto>
 {
 	public UpdatePayloadValidator()
 	{
@@ -18,5 +18,5 @@ public class UpdatePayloadValidator: AbstractValidator<CreatePayloadDto>
 			
 		RuleFor(payloadDto => payloadDto.Weight)
 			.ExclusiveBetween(0, 50_000_000);
-	}
+	}	
 }
