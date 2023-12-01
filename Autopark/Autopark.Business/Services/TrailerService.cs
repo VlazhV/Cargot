@@ -4,7 +4,6 @@ using Autopark.Business.DTOs.TrailerDTOs;
 using Autopark.Business.Interfaces;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
-using Autopark.DataAccess.Repositories;
 using Autopark.DataAccess.Specifications;
 using Identity.Business.Exceptions;
 
@@ -12,17 +11,14 @@ namespace Autopark.Business.Services;
 
 public class TrailerService: ITrailerService
 {
-	private readonly TrailerRepository _trailerRepository;
-	private readonly TrailerInShipScheduleRepository _scheduleRepository;
+	private readonly ITrailerRepository _trailerRepository;
 	private readonly IMapper _mapper;
 	
 	public TrailerService
-		(TrailerRepository trailerRepository, 
-		TrailerInShipScheduleRepository scheduleRepository,
+		(ITrailerRepository trailerRepository,
 		IMapper mapper)
 	{
 		_trailerRepository = trailerRepository;
-		_scheduleRepository = scheduleRepository;
 		_mapper = mapper;
 	}
 

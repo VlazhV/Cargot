@@ -2,20 +2,20 @@ using AutoMapper;
 using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Interfaces;
 using Autopark.DataAccess.Entities;
-using Autopark.DataAccess.Repositories;
+using Autopark.DataAccess.Interfaces;
 using Identity.Business.Exceptions;
 
 namespace Autopark.Business.Services;
 
 public class CarScheduleService: ICarScheduleService
 {
-	private readonly CarInShipScheduleRepository _scheduleRepository;
-	private readonly CarRepository _carRepository;
+	private readonly ICarInShipScheduleRepository _scheduleRepository;
+	private readonly ICarRepository _carRepository;
 	private readonly IMapper _mapper;
 	
 	public CarScheduleService
-		(CarInShipScheduleRepository carInShipScheduleRepository,		
-		CarRepository carRepository,
+		(ICarInShipScheduleRepository carInShipScheduleRepository,		
+		ICarRepository carRepository,
 		IMapper mapper)
 	{		
 		_scheduleRepository = carInShipScheduleRepository;

@@ -4,7 +4,6 @@ using Autopark.Business.DTOs.CarDTOs;
 using Autopark.Business.Interfaces;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
-using Autopark.DataAccess.Repositories;
 using Autopark.DataAccess.Specifications;
 using Identity.Business.Exceptions;
 
@@ -12,17 +11,14 @@ namespace Autopark.Business.Services;
 
 public class CarService : ICarService
 {
-	private readonly CarRepository _carRepository;
-	private readonly CarInShipScheduleRepository _scheduleRepository;
+	private readonly ICarRepository _carRepository;
 	private readonly IMapper _mapper;
 	
 	public CarService
-		(CarRepository carRepository, 
-		CarInShipScheduleRepository scheduleRepository,
+		(ICarRepository carRepository,
 		IMapper mapper)
 	{
 		_carRepository = carRepository;
-		_scheduleRepository = scheduleRepository;
 		_mapper = mapper;
 	}
 

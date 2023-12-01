@@ -3,20 +3,19 @@ using Autopark.Business.DTOs.ScheduleDtos;
 using Autopark.Business.Interfaces;
 using Autopark.DataAccess.Entities;
 using Autopark.DataAccess.Interfaces;
-using Autopark.DataAccess.Repositories;
 using Identity.Business.Exceptions;
 
 namespace Autopark.Business.Services;
 
 public class TrailerScheduleService: ITrailerScheduleService
 {
-	private readonly TrailerInShipScheduleRepository _scheduleRepository;
-	private readonly TrailerRepository _trailerRepository;
+	private readonly ITrailerInShipScheduleRepository _scheduleRepository;
+	private readonly ITrailerRepository _trailerRepository;
 	private readonly IMapper _mapper;
 	
 	public TrailerScheduleService
-		(TrailerInShipScheduleRepository scheduleRepository,
-		TrailerRepository trailerRepository,
+		(ITrailerInShipScheduleRepository scheduleRepository,
+		ITrailerRepository trailerRepository,
 		IMapper mapper)
 	{
 		_scheduleRepository = scheduleRepository;

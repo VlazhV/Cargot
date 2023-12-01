@@ -1,17 +1,17 @@
 using AutoMapper;
 using Autopark.Business.DTOs.AutoparkDTOs;
 using Autopark.Business.Interfaces;
-using Autopark.DataAccess.Repositories;
+using Autopark.DataAccess.Interfaces;
 using Identity.Business.Exceptions;
 
 namespace Autopark.Business.Services;
 
 public class AutoparkService: IAutoparkService
 {
-	private readonly AutoparkRepository _autoparkRepository;
+	private readonly IAutoparkRepository _autoparkRepository;
 	private readonly IMapper _mapper;
 	
-	public AutoparkService(AutoparkRepository autoparkRepository, IMapper mapper)
+	public AutoparkService(IAutoparkRepository autoparkRepository, IMapper mapper)
 	{
 		_autoparkRepository = autoparkRepository;
 		_mapper = mapper;
