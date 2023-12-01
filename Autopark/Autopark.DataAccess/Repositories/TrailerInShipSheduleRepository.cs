@@ -1,10 +1,11 @@
 using Autopark.DataAccess.Data;
 using Autopark.DataAccess.Entities;
+using Autopark.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
-public class TrailerInShipScheduleRepository : RepositoryBase<TrailerInShipSchedule>
+public class TrailerInShipScheduleRepository : RepositoryBase<TrailerInShipSchedule>, ITrailerInShipScheduleRepository
 {
 	public TrailerInShipScheduleRepository(DatabaseContext db): base(db)
 	{

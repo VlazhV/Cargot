@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
-public class TrailerRepository : RepositoryBase<Trailer>
+public class TrailerRepository : RepositoryBase<Trailer>, ITrailerRepository
 {
 	public TrailerRepository(DatabaseContext db): base(db)
 	{		

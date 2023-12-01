@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
-public class CarRepository : RepositoryBase<Car>
+public class CarRepository : RepositoryBase<Car>, ICarRepository
 {
 	public CarRepository(DatabaseContext db) : base(db)
 	{

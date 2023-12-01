@@ -1,9 +1,10 @@
 using Autopark.DataAccess.Data;
+using Autopark.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autopark.DataAccess.Repositories;
 
-public class AutoparkRepository : RepositoryBase<Entities.Autopark>
+public class AutoparkRepository : RepositoryBase<Entities.Autopark>, IAutoparkRepository
 {
 	public AutoparkRepository(DatabaseContext db) : base(db)
 	{
