@@ -4,30 +4,15 @@ using Order.Domain.Interfaces;
 
 namespace Order.Infrastructure.Repositories;
 
-public class OrderRepository : IOrderRepository
+public class OrderRepository: RepositoryBase<Domain.Entities.Order, long>, IOrderRepository
 {
-	private readonly DatabaseContext _db;
-	
-	public OrderRepository(DatabaseContext db)
+	public OrderRepository(DatabaseContext db): base(db)
 	{
-		_db = db;
 	}
-
+	
 	public void ClearPayloadList(Domain.Entities.Order order)
 	{
 		_db.Payloads.RemoveRange(order.Payloads);				
-	}
-
-	public async Task<Domain.Entities.Order> CreateAsync(Domain.Entities.Order entity)
-	{
-		var entry = await _db.Orders.AddAsync(entity);		
-		
-		return entry.Entity;
-	}
-
-	public void Delete(Domain.Entities.Order entity)
-	{
-		_db.Orders.Remove(entity);		
 	}
 
 	public bool DoesItExist(long id)
@@ -35,26 +20,6 @@ public class OrderRepository : IOrderRepository
 		return _db.Orders
 			.AsNoTracking()
 			.Any(o => o.Id == id);
-	}
-
-	public async Task<IEnumerable<Domain.Entities.Order>> GetAllAsync()
-	{
-		return await _db.Orders
-			.Include(o => o.Payloads)
-			.Include(o => o.Client)
-			.Include(o => o.OrderStatus)
-			.AsNoTracking()
-			.ToListAsync();
-	}
-
-	public async Task<Domain.Entities.Order?> GetByIdAsync(long id)
-	{
-		return await _db.Orders
-			.Include(o => o.Payloads)
-			.Include(o => o.Client)
-			.Include(o => o.OrderStatus)
-			.AsNoTracking()
-			.FirstOrDefaultAsync(o => o.Id == id);
 	}
 
 	public async Task<Domain.Entities.Order?> SetStatusAsync(Domain.Entities.Order order, string status)
@@ -68,17 +33,5 @@ public class OrderRepository : IOrderRepository
 		var entry = _db.Orders.Update(order);
 
 		return entry.Entity;
-	}
-
-	public Domain.Entities.Order Update(Domain.Entities.Order entity)
-	{
-		var entry = _db.Orders.Update(entity);		
-		
-		return entry.Entity;
-	}
-
-	public async Task SaveChangesAsync()
-	{
-		await _db.SaveChangesAsync();
 	}
 }

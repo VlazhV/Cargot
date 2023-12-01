@@ -5,25 +5,10 @@ using Order.Domain.Interfaces;
 
 namespace Order.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository: RepositoryBase<User, long>, IUserRepository
 {
-	private readonly DatabaseContext _db;
-
-	public UserRepository(DatabaseContext db)
-	{
-		_db = db;
-	}
-
-	public async Task<User> CreateAsync(User entity)
-	{
-		var entry = await _db.Users.AddAsync(entity);	
-
-		return entry.Entity;
-	}
-
-	public void Delete(User entity)
-	{
-		_db.Users.Remove(entity);		
+	public UserRepository(DatabaseContext db): base(db)
+	{		
 	}
 
 	public bool DoesItExist(long id)
@@ -38,35 +23,5 @@ public class UserRepository : IUserRepository
 		return _db.Users
 			.AsNoTracking()
 			.Any(u => u.Email.Equals(user.Email) || u.PhoneNumber.Equals(user.PhoneNumber) || u.UserName.Equals(user.UserName));
-	}
-
-	public async Task<IEnumerable<User>> GetAllAsync()
-	{
-		return await _db.Users
-			.Include(user => user.Orders)!
-				.ThenInclude(order => order.Payloads)
-			.AsNoTracking()
-			.ToListAsync();		
-	}
-
-	public async Task<User?> GetByIdAsync(long id)
-	{
-		return await _db.Users
-			.Include(user => user.Orders)!
-				.ThenInclude(order => order.Payloads)
-			.AsNoTracking()
-			.FirstOrDefaultAsync(user => user.Id == id);
-	}
-
-	public User Update(User entity)
-	{
-		var entry = _db.Users.Update(entity);		
-
-		return entry.Entity;
-	}
-
-	public async Task SaveChangesAsync()
-	{
-		await _db.SaveChangesAsync();
 	}
 }
