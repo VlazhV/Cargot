@@ -78,5 +78,4 @@ public class UserService: IUserService
 
 		return _mapper.Map<GetUserDto>(user);
 	}
-
 }

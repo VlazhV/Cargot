@@ -24,7 +24,7 @@ public class UsersController: ControllerBase
 	}
 	
 	[HttpPost]
-	public async Task<ActionResult<GetUserDto>> CreateAsync(UpdateUserDto userDto)
+	public async Task<ActionResult<GetUserDto>> CreateAsync([FromBody] UpdateUserDto userDto)
 	{
 		return Ok(await _userService.CreateAsync(userDto));
 	}

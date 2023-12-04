@@ -19,6 +19,5 @@ public class Order
 	public long ClientId { get; set; } 
 	
 	public OrderStatus OrderStatus { get; set; } = null!;
-	public ushort OrderStatusId { get; set; }
-	
+	public ushort OrderStatusId { get; set; }	
 }

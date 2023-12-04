@@ -91,5 +91,4 @@ public class PayloadService: IPayloadService
 
 		return _mapper.Map<GetPayloadDto>(updatedPayload);
 	}
-
 }

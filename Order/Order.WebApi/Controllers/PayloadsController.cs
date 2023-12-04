@@ -31,7 +31,7 @@ public class PayloadsController: ControllerBase
 	}
 	
 	[HttpPut("{id}")]
-	public async Task<ActionResult<GetPayloadDto>> UpdateAsync(long id, UpdatePayloadDto payloadDto)
+	public async Task<ActionResult<GetPayloadDto>> UpdateAsync(long id, [FromBody] UpdatePayloadDto payloadDto)
 	{
 		return Ok(await _payloadService.UpdateAsync(id, User, payloadDto));
 	}

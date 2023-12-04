@@ -36,14 +36,12 @@ public class OrderService : IOrderService
 		{
 			var role = user.FindFirst(ClaimTypes.Role)!.Value;
 		
-			if (role == Roles.Admin || role == Roles.Manager)
-			{
-				clientId = customerId.Value;
-			}
-			else
+			if (!(role == Roles.Admin || role == Roles.Manager))
 			{
 				throw new ApiException("No permission", ApiException.Forbidden);
 			}
+			
+			clientId = customerId.Value;
 		}
 		else
 		{
@@ -81,7 +79,10 @@ public class OrderService : IOrderService
 		}
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
+		{
 			throw new ApiException("No permission", ApiException.Forbidden);
+		}
+			
 
 		_orderRepository.Delete(order);
 		await _orderRepository.SaveChangesAsync();
@@ -189,5 +190,4 @@ public class OrderService : IOrderService
 
 		return _mapper.Map<GetOrderInfoDto>(order);
 	}
-
 }

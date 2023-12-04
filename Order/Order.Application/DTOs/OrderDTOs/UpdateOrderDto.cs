@@ -7,5 +7,4 @@ public class UpdateOrderDto
 	
 	public DateTime LoadTime { get; set; }
 	public DateTime DeliverTime { get; set; }
-
 }
