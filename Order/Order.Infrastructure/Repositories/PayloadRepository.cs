@@ -12,10 +12,10 @@ public class PayloadRepository: RepositoryBase<Payload, long>, IPayloadRepositor
 	{
 	}
 
-	public bool DoesItExist(long id)
+	public async Task<bool> DoesItExistAsync(long id)
 	{
-		return _db.Payloads
+		return await _db.Payloads
 			.AsNoTracking()
-			.Any(p => p.Id == id);
+			.AnyAsync(p => p.Id == id);
 	}
 }

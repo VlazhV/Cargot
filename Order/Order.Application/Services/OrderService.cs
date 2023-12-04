@@ -35,6 +35,7 @@ public class OrderService : IOrderService
 		if (customerId.HasValue)
 		{
 			var role = user.FindFirst(ClaimTypes.Role)!.Value;
+		
 			if (role == Roles.Admin || role == Roles.Manager)
 			{
 				clientId = customerId.Value;
@@ -49,7 +50,7 @@ public class OrderService : IOrderService
 			clientId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 		}
 
-		if (!_userRepository.DoesItExist(clientId))
+		if (! await _userRepository.DoesItExistAsync(clientId))
 		{
 			throw new ApiException("User is not found", ApiException.NotFound);
 		}
@@ -72,8 +73,12 @@ public class OrderService : IOrderService
 
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-		var order = await _orderRepository.GetByIdAsync(id)
-			?? throw new ApiException("Order is not found", ApiException.NotFound);
+		var order = await _orderRepository.GetByIdAsync(id);
+		
+		if (order is null)
+		{
+			throw new ApiException("Order is not found", ApiException.NotFound);	
+		}
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 			throw new ApiException("No permission", ApiException.Forbidden);
@@ -92,10 +97,14 @@ public class OrderService : IOrderService
 	public async Task<GetOrderInfoDto> GetByIdAsync(long id, ClaimsPrincipal user)
 	{
 		var role = user.FindFirst(ClaimTypes.Role)!.Value;
-		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value); 		
+		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+		var order = await _orderRepository.GetByIdAsync(id);
 		
-		var order = await _orderRepository.GetByIdAsync(id)
-			?? throw new ApiException("Order is not found", ApiException.NotFound);
+		if (order is null)
+		{
+			throw new ApiException("Order is not found", ApiException.NotFound);
+		}			
 			
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 		{

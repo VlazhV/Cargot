@@ -4,5 +4,5 @@ namespace Order.Domain.Interfaces;
 
 public interface IPayloadRepository: IRepository<Payload, long>
 {
-	bool DoesItExist(long id);
+	Task<bool> DoesItExistAsync(long id);
 }

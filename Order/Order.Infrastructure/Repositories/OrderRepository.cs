@@ -15,11 +15,11 @@ public class OrderRepository: RepositoryBase<Domain.Entities.Order, long>, IOrde
 		_db.Payloads.RemoveRange(order.Payloads);				
 	}
 
-	public bool DoesItExist(long id)
+	public async Task<bool> DoesItExistAsync(long id)
 	{
-		return _db.Orders
+		return await _db.Orders
 			.AsNoTracking()
-			.Any(o => o.Id == id);
+			.AnyAsync(o => o.Id == id);
 	}
 
 	public async Task<Domain.Entities.Order?> SetStatusAsync(Domain.Entities.Order order, string status)

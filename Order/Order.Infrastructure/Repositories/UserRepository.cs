@@ -11,17 +11,17 @@ public class UserRepository: RepositoryBase<User, long>, IUserRepository
 	{		
 	}
 
-	public bool DoesItExist(long id)
+	public async Task<bool> DoesItExistAsync(long id)
 	{
-		return _db.Users
+		return await _db.Users
 			.AsNoTracking()
-			.Any(u => u.Id == id);
+			.AnyAsync(u => u.Id == id);
 	}
 
-	public bool DoesItExist(User user)
+	public async Task<bool> DoesItExistAsync(User user)
 	{
-		return _db.Users
+		return await _db.Users
 			.AsNoTracking()
-			.Any(u => u.Email.Equals(user.Email) || u.PhoneNumber.Equals(user.PhoneNumber) || u.UserName.Equals(user.UserName));
+			.AnyAsync(u => u.Email.Equals(user.Email) || u.PhoneNumber.Equals(user.PhoneNumber) || u.UserName.Equals(user.UserName));
 	}
 }
