@@ -12,7 +12,12 @@ public class PayloadRepository: RepositoryBase<Payload, long>, IPayloadRepositor
 	{
 	}
 
-	public async Task<bool> DoesItExistAsync(long id)
+    public async Task CreateManyAsync(IEnumerable<Payload> payloads)
+    {
+		await _db.Payloads.AddRangeAsync(payloads);
+    }
+
+    public async Task<bool> DoesItExistAsync(long id)
 	{
 		return await _db.Payloads
 			.AsNoTracking()
