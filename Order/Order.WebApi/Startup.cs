@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Order.Application.DTOs.OrderDTOs;
@@ -30,11 +31,6 @@ public static class Startup
 	public static void ConfigureValidation(this IServiceCollection services)
 	{
 		services.AddFluentValidationAutoValidation();
-
-		services.AddScoped<IValidator<UpdateOrderDto>, UpdateOrderValidator>();
-		services.AddScoped<IValidator<UpdatePayloadDto>, UpdatePayloadValidator>();
-		services.AddScoped<IValidator<CreatePayloadDto>, CreatePayloadValidator>();
-		services.AddScoped<IValidator<UpdateOrderPayloadsDto>, UpdateOrderPayloadsValidator>();
-		services.AddScoped<IValidator<UpdateUserDto>, UpdateUserValidator>();
+		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 	}
 }
