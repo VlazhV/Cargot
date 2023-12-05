@@ -19,16 +19,7 @@ public class PayloadService: IPayloadService
 	{
 		_payloadRepository = payloadRepository;
 		_mapper = mapper;
-	}
-
-	public async Task<GetPayloadDto> CreateAsync(CreatePayloadDto payloadDto)
-	{
-		var payload = _mapper.Map<Payload>(payloadDto);
-
-		payload = await _payloadRepository.CreateAsync(payload);
-
-		return _mapper.Map<GetPayloadDto>(payload);
-	}
+	}	
 
 	public async Task DeleteAsync(long id, ClaimsPrincipal user)
 	{

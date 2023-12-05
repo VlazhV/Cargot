@@ -7,22 +7,23 @@ using Order.Application.Interfaces;
 using Order.Domain.Constants;
 using Order.Application.Constants;
 using Order.Domain.Interfaces;
+using Order.Domain.Entities;
 namespace Order.Application.Services;
 
 public class OrderService : IOrderService
 {
-	private readonly IPayloadService _payloadService;
+	private readonly IPayloadRepository _payloadRepository;
 	private readonly IOrderRepository _orderRepository;
 	private readonly IUserRepository _userRepository;
 	private readonly IMapper _mapper;
 
 	public OrderService
-		(IPayloadService payloadService,
+		(IPayloadRepository payloadRepository,
 		IOrderRepository orderRepository,
 		IUserRepository userRepository,
 		IMapper mapper)
 	{
-		_payloadService = payloadService;
+		_payloadRepository = payloadRepository;
 		_orderRepository = orderRepository;
 		_userRepository = userRepository;
 		_mapper = mapper;
@@ -176,14 +177,14 @@ public class OrderService : IOrderService
 		}
 
 		_orderRepository.ClearPayloadList(order);
+		var payloads = _mapper.Map<IEnumerable<Payload>>(payloadDtos);
 		
-		foreach(var payloadDto in payloadDtos)
+		foreach(var payload in payloads)
 		{
-			var createPayloadDto = _mapper.Map<CreatePayloadDto>(payloadDto);
-			createPayloadDto.OrderId = id;
-			await _payloadService.CreateAsync(createPayloadDto);
+			payload.OrderId = id;
 		}
 
+		await _payloadRepository.CreateManyAsync(payloads);		
 		await _orderRepository.SaveChangesAsync();
 		
 		order = await _orderRepository.GetByIdAsync(id);
