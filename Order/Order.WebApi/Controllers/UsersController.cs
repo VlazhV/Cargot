@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Order.Application.DTOs.UserDTOs;
 using Order.Application.Interfaces;
+using Order.WebApi.Extensions;
 
 namespace Order.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "admin, manager")]
+[AuthorizeAdminManager]
 public class UsersController: ControllerBase
 {
 	private readonly IUserService _userService;

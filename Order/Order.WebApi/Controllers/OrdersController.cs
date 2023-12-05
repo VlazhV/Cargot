@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Order.Application.DTOs.OrderDTOs;
 using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Interfaces;
+using Order.WebApi.Extensions;
 
 namespace Order.WebApi.Controllers;
 
@@ -19,7 +20,7 @@ public class OrdersController: ControllerBase
 	}
 	
 	[HttpGet]
-	[Authorize(Roles = "admin, manager")]
+	[AuthorizeAdminManager]
 	public async Task<ActionResult<IEnumerable<GetOrderInfoDto>>> GetAllAsync()
 	{
 		return Ok(await _orderService.GetAllAsync());

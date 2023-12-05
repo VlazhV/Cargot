@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Interfaces;
+using Order.WebApi.Extensions;
 
 namespace Order.WebApi.Controllers;
 
@@ -18,7 +19,7 @@ public class PayloadsController: ControllerBase
 	}
 	
 	[HttpGet]
-	[Authorize(Roles = "admin, manager")]
+	[AuthorizeAdminManager]
 	public async Task<ActionResult<IEnumerable<GetPayloadOrderDto>>> GetAllAsync()
 	{
 		return Ok(await _payloadService.GetAllAsync());
