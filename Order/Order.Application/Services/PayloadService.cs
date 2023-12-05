@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Order.Application.Constants;
 using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
@@ -35,11 +36,11 @@ public class PayloadService: IPayloadService
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var payload = await _payloadRepository.GetByIdAsync(id)
-			?? throw new ApiException("Payload is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.PayloadIsNotFound, ApiException.NotFound);
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == payload.Order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		_payloadRepository.Delete(payload);
@@ -59,11 +60,11 @@ public class PayloadService: IPayloadService
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 		
 		var payload = await _payloadRepository.GetByIdAsync(id)
-			?? throw new ApiException("Payload is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.PayloadIsNotFound, ApiException.NotFound);
 			
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == payload.Order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		return _mapper.Map<GetPayloadOrderDto>(payload);
@@ -75,11 +76,11 @@ public class PayloadService: IPayloadService
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var payload = await _payloadRepository.GetByIdAsync(id)
-			?? throw new ApiException("Payload is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.PayloadIsNotFound, ApiException.NotFound);
 			
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == payload.Order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 		
 		var updatedPayload = _mapper.Map<Payload>(payloadDto);

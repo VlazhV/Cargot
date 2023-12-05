@@ -5,7 +5,7 @@ using Order.Application.DTOs.PayloadDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
 using Order.Domain.Constants;
-using Order.Domain.Entities;
+using Order.Application.Constants;
 using Order.Domain.Interfaces;
 namespace Order.Application.Services;
 
@@ -38,7 +38,7 @@ public class OrderService : IOrderService
 		
 			if (!(role == Roles.Admin || role == Roles.Manager))
 			{
-				throw new ApiException("No permission", ApiException.Forbidden);
+				throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 			}
 			
 			clientId = customerId.Value;
@@ -50,7 +50,7 @@ public class OrderService : IOrderService
 
 		if (! await _userRepository.DoesItExistAsync(clientId))
 		{
-			throw new ApiException("User is not found", ApiException.NotFound);
+			throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 		}
 
 		var order = _mapper.Map<Domain.Entities.Order>(orderDto);
@@ -75,12 +75,12 @@ public class OrderService : IOrderService
 		
 		if (order is null)
 		{
-			throw new ApiException("Order is not found", ApiException.NotFound);	
+			throw new ApiException(Messages.OrderIsNotFound, ApiException.NotFound);	
 		}
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 			
 
@@ -104,12 +104,12 @@ public class OrderService : IOrderService
 		
 		if (order is null)
 		{
-			throw new ApiException("Order is not found", ApiException.NotFound);
+			throw new ApiException(Messages.OrderIsNotFound, ApiException.NotFound);
 		}			
 			
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		return _mapper.Map<GetOrderInfoDto>(order);
@@ -121,14 +121,14 @@ public class OrderService : IOrderService
 
 		if (!(role == Roles.Admin || role == Roles.Manager))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		var order = await _orderRepository.GetByIdAsync(id)
-			?? throw new ApiException("Order is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.OrderIsNotFound, ApiException.NotFound);
 
 		order = await _orderRepository.SetStatusAsync(order, status.ToLower())
-			?? throw new ApiException("Incorrect orderStatus", ApiException.BadRequest);
+			?? throw new ApiException(Messages.IncorrectOrderStatus, ApiException.BadRequest);
 
 		if (status.Equals(OrderStatuses.Accepted.Name))
 		{
@@ -148,11 +148,11 @@ public class OrderService : IOrderService
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var order = await _orderRepository.GetByIdAsync(id)
-			?? throw new ApiException("Order is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.OrderIsNotFound, ApiException.NotFound);
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		order = _mapper.Map(orderDto, order);
@@ -168,11 +168,11 @@ public class OrderService : IOrderService
 		var userId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var order = await _orderRepository.GetByIdAsync(id)
-			?? throw new ApiException("Order is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.OrderIsNotFound, ApiException.NotFound);
 
 		if (!(role == Roles.Admin || role == Roles.Manager || userId == order.ClientId))
 		{
-			throw new ApiException("No permission", ApiException.Forbidden);
+			throw new ApiException(Messages.NoPermission, ApiException.Forbidden);
 		}
 
 		_orderRepository.ClearPayloadList(order);

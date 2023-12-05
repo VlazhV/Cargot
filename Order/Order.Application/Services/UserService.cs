@@ -1,4 +1,5 @@
 using AutoMapper;
+using Order.Application.Constants;
 using Order.Application.DTOs.UserDTOs;
 using Order.Application.Exceptions;
 using Order.Application.Interfaces;
@@ -24,7 +25,7 @@ public class UserService: IUserService
 		
 		if (await _userRepository.DoesItExistAsync(user))
 		{
-			throw new ApiException("Email, phone number or user name is reserved", ApiException.BadRequest);	
+			throw new ApiException(Messages.EmailPhoneNameIsReserved, ApiException.BadRequest);	
 		}
 
 		user = await _userRepository.CreateAsync(user);
@@ -36,7 +37,7 @@ public class UserService: IUserService
 	public async Task DeleteAsync(long id)
 	{
 		var user = await _userRepository.GetByIdAsync(id)
-			?? throw new ApiException("User is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 
 		_userRepository.Delete(user);
 		await _userRepository.SaveChangesAsync();
@@ -52,7 +53,7 @@ public class UserService: IUserService
 	public async Task<GetUserInfoDto> GetByIdAsync(long id)
 	{
 		var user = await _userRepository.GetByIdAsync(id)
-			?? throw new ApiException("User is not found", ApiException.NotFound);
+			?? throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 
 		return _mapper.Map<GetUserInfoDto>(user);
 	}
@@ -61,14 +62,14 @@ public class UserService: IUserService
 	{
 		if (! await _userRepository.DoesItExistAsync(id))
 		{
-			throw new ApiException("User is not found", ApiException.NotFound);
+			throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 		}
 		
 		var user = _mapper.Map<User>(userDto);
 		
 		if (await _userRepository.DoesItExistAsync(user))
 		{
-			throw new ApiException("email, phone number or user name is reserved", ApiException.BadRequest);
+			throw new ApiException(Messages.EmailPhoneNameIsReserved, ApiException.BadRequest);
 		}
 		
 		user.Id = id;
