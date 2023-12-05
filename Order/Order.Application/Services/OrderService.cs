@@ -92,7 +92,7 @@ public class OrderService : IOrderService
 	{
 		var orders = await _orderRepository.GetAllAsync();
 
-		return orders.Select(o => _mapper.Map<GetOrderInfoDto>(o));
+		return _mapper.Map<IEnumerable<GetOrderInfoDto>>(orders);
 	}
 
 	public async Task<GetOrderInfoDto> GetByIdAsync(long id, ClaimsPrincipal user)

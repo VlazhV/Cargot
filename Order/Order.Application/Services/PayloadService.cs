@@ -49,8 +49,8 @@ public class PayloadService: IPayloadService
 	public async Task<IEnumerable<GetPayloadOrderDto>> GetAllAsync()
 	{
 		var payloads = await _payloadRepository.GetAllAsync();
-
-		return payloads.Select(payload => _mapper.Map<GetPayloadOrderDto>(payload));
+		
+		return _mapper.Map<IEnumerable<GetPayloadOrderDto>>(payloads);
 	}
 
 	public async Task<GetPayloadOrderDto> GetByIdAsync(long id, ClaimsPrincipal user)

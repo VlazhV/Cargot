@@ -45,8 +45,8 @@ public class UserService: IUserService
 	public async Task<IEnumerable<GetUserDto>> GetAllAsync()
 	{
 		var users = await _userRepository.GetAllAsync();
-
-		return users.Select(user => _mapper.Map<GetUserDto>(user));		
+		
+		return _mapper.Map<IEnumerable<GetUserDto>>(users);
 	}
 
 	public async Task<GetUserInfoDto> GetByIdAsync(long id)
