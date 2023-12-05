@@ -15,7 +15,7 @@ public class OrderRepository: RepositoryBase<Domain.Entities.Order, long>, IOrde
 		_db.Payloads.RemoveRange(order.Payloads);				
 	}
 
-	public async Task<bool> DoesItExistAsync(long id)
+	public async Task<bool> IsOrderExistsAsync(long id)
 	{
 		return await _db.Orders
 			.AsNoTracking()

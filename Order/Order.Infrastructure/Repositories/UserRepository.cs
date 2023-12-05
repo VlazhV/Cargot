@@ -11,14 +11,14 @@ public class UserRepository: RepositoryBase<User, long>, IUserRepository
 	{		
 	}
 
-	public async Task<bool> DoesItExistAsync(long id)
+	public async Task<bool> IsUserExistsAsync(long id)
 	{
 		return await _db.Users
 			.AsNoTracking()
 			.AnyAsync(u => u.Id == id);
 	}
 
-	public async Task<bool> DoesItExistAsync(User user)
+	public async Task<bool> IsUserExistsAsync(User user)
 	{
 		return await _db.Users
 			.AsNoTracking()

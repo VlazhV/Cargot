@@ -23,7 +23,7 @@ public class UserService: IUserService
 	{
 		var user = _mapper.Map<User>(userDto);
 		
-		if (await _userRepository.DoesItExistAsync(user))
+		if (await _userRepository.IsUserExistsAsync(user))
 		{
 			throw new ApiException(Messages.EmailPhoneNameIsReserved, ApiException.BadRequest);	
 		}
@@ -60,14 +60,14 @@ public class UserService: IUserService
 
 	public async Task<GetUserDto> UpdateAsync(long id, UpdateUserDto userDto)
 	{
-		if (! await _userRepository.DoesItExistAsync(id))
+		if (! await _userRepository.IsUserExistsAsync(id))
 		{
 			throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 		}
 		
 		var user = _mapper.Map<User>(userDto);
 		
-		if (await _userRepository.DoesItExistAsync(user))
+		if (await _userRepository.IsUserExistsAsync(user))
 		{
 			throw new ApiException(Messages.EmailPhoneNameIsReserved, ApiException.BadRequest);
 		}

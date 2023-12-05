@@ -4,5 +4,5 @@ public interface IOrderRepository: IRepository<Domain.Entities.Order, long>
 {
 	Task<Domain.Entities.Order?> SetStatusAsync(Domain.Entities.Order order, string status);
 	void ClearPayloadList(Domain.Entities.Order order);
-	Task<bool> DoesItExistAsync(long id);
+	Task<bool> IsOrderExistsAsync(long id);
 }

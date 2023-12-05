@@ -4,6 +4,6 @@ namespace Order.Domain.Interfaces;
 
 public interface IUserRepository: IRepository<User, long>
 {
-	Task<bool> DoesItExistAsync(long id);
-	Task<bool> DoesItExistAsync(User user);	
+	Task<bool> IsUserExistsAsync(long id);
+	Task<bool> IsUserExistsAsync(User user);	
 }

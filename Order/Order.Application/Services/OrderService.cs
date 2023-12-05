@@ -49,7 +49,7 @@ public class OrderService : IOrderService
 			clientId = long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 		}
 
-		if (! await _userRepository.DoesItExistAsync(clientId))
+		if (! await _userRepository.IsUserExistsAsync(clientId))
 		{
 			throw new ApiException(Messages.UserIsNotFound, ApiException.NotFound);
 		}
