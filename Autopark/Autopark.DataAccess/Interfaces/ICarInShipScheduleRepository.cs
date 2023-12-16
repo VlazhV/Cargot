@@ -4,6 +4,6 @@ namespace Autopark.DataAccess.Interfaces;
 
 public interface ICarInShipScheduleRepository: IRepository<CarInShipSchedule>
 {
-	bool DoesItExist(int id);
+	Task<bool> DoesItExistAsync(int id);
 	Task<IEnumerable<CarInShipSchedule>> GetAllOfCarAsync(int carId);
 }

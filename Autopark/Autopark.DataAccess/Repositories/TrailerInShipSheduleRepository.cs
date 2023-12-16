@@ -11,11 +11,11 @@ public class TrailerInShipScheduleRepository : RepositoryBase<TrailerInShipSched
 	{
 	}
 	
-	public bool DoesItExist(int id)
+	public async Task<bool> DoesItExistAsync(int id)
 	{
-		return _db.TrailerSchedule
+		return await _db.TrailerSchedule
 			.AsNoTracking()
-			.Any(s => s.Id == id);
+			.AnyAsync(s => s.Id == id);
 	}
 
 	public async Task<IEnumerable<TrailerInShipSchedule>> GetAllOfTrailerAsync(int trailerId)

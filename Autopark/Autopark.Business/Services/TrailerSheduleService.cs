@@ -25,7 +25,7 @@ public class TrailerScheduleService: ITrailerScheduleService
 	
 	public async Task<GetScheduleDto> AddPlannedScheduleAsync(int vehicleId, UpdatePlanScheduleDto scheduleDto)
 	{
-		if (!_trailerRepository.DoesItExist(vehicleId))
+		if (! await _trailerRepository.DoesItExistAsync(vehicleId))
 		{
 			throw new ApiException("Trailer not found", ApiException.NotFound);	
 		}
@@ -95,7 +95,7 @@ public class TrailerScheduleService: ITrailerScheduleService
 
 	public async Task<IEnumerable<GetScheduleDto>> GetSchedulesOfVehicleAsync(int vehicleId)
 	{
-		if (!_trailerRepository.DoesItExist(vehicleId))
+		if (! await _trailerRepository.DoesItExistAsync(vehicleId))
 		{
 			throw new ApiException("Trailer not found", ApiException.NotFound);	
 		}			

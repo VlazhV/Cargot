@@ -53,7 +53,7 @@ public class AutoparkService: IAutoparkService
 
 	public async Task<GetAutoparkDto> UpdateAsync(int id, UpdateAutoparkDto autoparkDto)
 	{
-		if (!_autoparkRepository.DoesItExist(id))
+		if (! await _autoparkRepository.DoesItExistAsync(id))
 			throw new ApiException("Autopark not found", ApiException.NotFound);
 		
 		var autopark = _mapper.Map<DataAccess.Entities.Autopark>(autoparkDto);

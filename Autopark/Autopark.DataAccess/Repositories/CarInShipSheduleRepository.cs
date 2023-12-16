@@ -11,11 +11,11 @@ public class CarInShipScheduleRepository : RepositoryBase<CarInShipSchedule>, IC
 	{
 	}
 
-	public bool DoesItExist(int id)
+	public async Task<bool> DoesItExistAsync(int id)
 	{
-		return _db.CarSchedule
+		return await _db.CarSchedule
 			.AsNoTracking()
-			.Any(s => s.Id == id);
+			.AnyAsync(s => s.Id == id);
 	}
 
 	public async Task<IEnumerable<CarInShipSchedule>> GetAllOfCarAsync(int carId)
