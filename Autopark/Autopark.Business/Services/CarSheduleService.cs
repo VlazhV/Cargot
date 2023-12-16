@@ -25,7 +25,7 @@ public class CarScheduleService: ICarScheduleService
 
 	public async Task<GetScheduleDto> AddPlannedScheduleAsync(int vehicleId, UpdatePlanScheduleDto scheduleDto)
 	{
-		if (!_carRepository.DoesItExist(vehicleId)){
+		if (! await _carRepository.DoesItExistAsync(vehicleId)){
 			throw new ApiException("Car not found", ApiException.NotFound);
 		}
 		
@@ -95,7 +95,7 @@ public class CarScheduleService: ICarScheduleService
 
 	public async Task<IEnumerable<GetScheduleDto>> GetSchedulesOfVehicleAsync(int vehicleId)
 	{
-		if (!_carRepository.DoesItExist(vehicleId))
+		if (! await _carRepository.DoesItExistAsync(vehicleId))
 			throw new ApiException("Car not found", ApiException.NotFound);
 			
 		var schedules = await _scheduleRepository.GetAllOfCarAsync(vehicleId);

@@ -4,7 +4,7 @@ namespace Autopark.DataAccess.Interfaces;
 
 public interface ITrailerRepository: IRepository<Trailer>
 {
-	bool DoesItExist(int id);
-	bool DoesItExist(string licenseNumber);
+	Task<bool> DoesItExistAsync(int id);
+	Task<bool> DoesItExistAsync(string licenseNumber);
 	Task<IEnumerable<Trailer>> GetWithSpecsAsync(IEnumerable<ISpecification<Trailer>> specs);
 }

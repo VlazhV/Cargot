@@ -11,18 +11,18 @@ public class CarRepository : RepositoryBase<Car>, ICarRepository
 	{
 	}
 
-	public bool DoesItExist(int id)
+	public async Task<bool> DoesItExistAsync(int id)
 	{
-		return _db.Cars
+		return await _db.Cars
 			.AsNoTracking()
-			.Any(c => c.Id == id);
+			.AnyAsync(c => c.Id == id);
 	}
 
-	public bool DoesItExist(string licenseNumber)
+	public async Task<bool> DoesItExistAsync(string licenseNumber)
 	{
-		return _db.Cars
+		return await _db.Cars
 			.AsNoTracking()
-			.Any(c => c.LicenseNumber.Equals(licenseNumber));
+			.AnyAsync(c => c.LicenseNumber.Equals(licenseNumber));
 	}
 
 	public async Task<IEnumerable<Car>> GetWithSpecsAsync(IEnumerable<ISpecification<Car>> specs)

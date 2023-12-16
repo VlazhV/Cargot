@@ -11,18 +11,18 @@ public class TrailerRepository : RepositoryBase<Trailer>, ITrailerRepository
 	{		
 	}
 
-	public bool DoesItExist(int id)
+	public async Task<bool> DoesItExistAsync(int id)
 	{
-		return _db.Trailers
+		return await _db.Trailers
 			.AsNoTracking()
-			.Any(t => t.Id == id);
+			.AnyAsync(t => t.Id == id);
 	}
 
-	public bool DoesItExist(string licenseNumber)
+	public async Task<bool> DoesItExistAsync(string licenseNumber)
 	{
-		return _db.Trailers
+		return await _db.Trailers
 			.AsNoTracking()
-			.Any(t => t.LicenseNumber.Equals(licenseNumber));
+			.AnyAsync(t => t.LicenseNumber.Equals(licenseNumber));
 	}
 
 	public async Task<IEnumerable<Trailer>> GetWithSpecsAsync(IEnumerable<ISpecification<Trailer>> specs)
