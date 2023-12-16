@@ -10,10 +10,26 @@ public class AutoparkRepository : RepositoryBase<Entities.Autopark>, IAutoparkRe
 	{
 	}
 
-	public bool DoesItExist(int id)
+	public async Task<bool> DoesItExistAsync(int id)
 	{
-		return _db.Autoparks
+		return await _db.Autoparks
 			.AsNoTracking()
-			.Any(a => a.Id == id);
+			.AnyAsync(a => a.Id == id);
+	}
+
+	public override async Task<IEnumerable<Entities.Autopark>> GetAllAsync()
+	{
+		return await _db.Autoparks
+			.Include(a => a.Cars)
+			.Include(a => a.Trailers)
+			.ToListAsync();
+	}
+
+	public override async Task<Entities.Autopark?> GetByIdAsync(int id)
+	{
+		return await _db.Autoparks
+			.Include(a => a.Cars)
+			.Include(a => a.Trailers)
+			.FirstOrDefaultAsync(a => a.Id == id);			
 	}
 }

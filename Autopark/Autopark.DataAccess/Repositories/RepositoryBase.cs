@@ -13,36 +13,36 @@ public class RepositoryBase<T> : IRepository<T> where T: class
 		_db = db;
 	}
 	
-	public async Task<T> CreateAsync(T entity)
+	public virtual async Task<T> CreateAsync(T entity)
 	{
 		var entry = await _db.AddAsync(entity!);
 
 		return entry.Entity;	
 	}
 
-	public void Delete(T entity)
+	public virtual void Delete(T entity)
 	{
 		_db.Remove(entity!);
 	}
 
-	public async Task<IEnumerable<T>> GetAllAsync()
+	public virtual async Task<IEnumerable<T>> GetAllAsync()
 	{
 		return await _db.Set<T>()
 			.AsNoTracking()
 			.ToListAsync();		
 	}
 
-	public async Task<T?> GetByIdAsync(int id)
+	public virtual async Task<T?> GetByIdAsync(int id)
 	{
 		return await _db.Set<T>().FindAsync(id);
 	}
 
-	public async Task SaveChangesAsync()
+	public virtual async Task SaveChangesAsync()
 	{
 		await _db.SaveChangesAsync();
 	}
 
-	public T Update(T entity)
+	public virtual T Update(T entity)
 	{
 		var entry = _db.Update(entity);
 
