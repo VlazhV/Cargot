@@ -11,5 +11,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 as serve
 WORKDIR /app
 COPY --from=build /app ./
 
+COPY Identity.Presentation/.env /app/.env
+
 EXPOSE 80
 ENTRYPOINT [ "dotnet", "Identity.Presentation.dll" ]
