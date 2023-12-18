@@ -12,17 +12,23 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Identity.Business.DTOs;
 using Identity.Business.Validators;
-
-
+using DotNetEnv;
+using Identity.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
+
+var variant = args.GetConnectionStringVariant();
+var connectionString = builder.Configuration.GetConfiguredConnectionString(variant);
 
 builder.Services.AddDbContext<DatabaseContext>(options => 
 {
 	options.UseSqlServer(
-		builder.Configuration.GetConnectionString("Default"),
+		connectionString,
 		sqlBuilder => sqlBuilder.MigrationsAssembly(nameof(Identity.DataAccess)));
 });
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 builder.Services.AddScoped<ITokenService, TokenService>();

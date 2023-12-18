@@ -4,14 +4,20 @@ using Identity.Business.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Autopark.Presentation;
+using DotNetEnv;
+using DotNetEnv.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
+
+var variant = args.GetConnectionStringVariant();
+var connectionString = builder.Configuration.GetConfiguredConnectionString(variant);
 
 builder.Services.AddDbContext<DatabaseContext>(options => 
 {
 	options.UseSqlServer(
-		builder.Configuration.GetConnectionString("Default"),
+		connectionString,
 		sqlBuilder =>
 			sqlBuilder.MigrationsAssembly(
 				Assembly.GetAssembly(typeof(DatabaseContext))?.GetName().Name)

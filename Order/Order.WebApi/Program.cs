@@ -1,4 +1,5 @@
 using System.Reflection;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Order.Application.Extensions;
 using Order.Infrastructure.Data;
@@ -6,10 +7,14 @@ using Order.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Env.Load();
+
+var variant = args.GetConnectionStringVariant();
+var connectionString = builder.Configuration.GetConfiguredConnectionString(variant);
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
 	options.UseSqlServer(
-		builder.Configuration.GetConnectionString("Default"),
+		connectionString,
 		sqlBuilder => sqlBuilder.MigrationsAssembly(
 			Assembly.GetAssembly(typeof(DatabaseContext))!.GetName().Name
 		)
