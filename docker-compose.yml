@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  autopark:
+    container_name: autopark-service
+    build:      
+      context: ./Autopark
+      dockerfile: "Dockerfile"    
+    depends_on:
+      - mssql    
+    ports:
+      - "5001:80"
+  
+  order:
+   container_name: order-service
+   build:
+     context: ./Order
+     dockerfile: "Dockerfile"
+   depends_on:
+     - mssql
+   ports:
+     - "5002:80"
+
+  identity:
+   container_name: identity-service
+   build:
+     context: ./Identity
+     dockerfile: "Dockerfile"
+   depends_on:
+     - mssql
+   ports:
+     - "5003:80"
+
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:latest
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: Express
+      SA_PASSWORD: ${SA_PASSWORD}
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+volumes:
+  mssql_data:
