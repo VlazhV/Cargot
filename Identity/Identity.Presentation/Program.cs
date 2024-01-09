@@ -12,6 +12,11 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Identity.Business.DTOs;
 using Identity.Business.Validators;
+using Confluent.Kafka;
+using Microsoft.Extensions.Options;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+using Identity.Business.Serializer;
 
 
 
@@ -31,6 +36,19 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
+
+builder.Services.Configure<ProducerConfig>(
+	builder.Configuration.GetSection("Kafka")
+);
+
+builder.Services.AddSingleton<IProducer<long, UserIdDto>>(sp =>
+{		
+	var config = sp.GetRequiredService<IOptions<ProducerConfig>>();
+		
+	return new ProducerBuilder<long, UserIdDto>(config.Value)
+		.SetValueSerializer(new UserIdDtoSerializer())
+		.Build();
+});
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
