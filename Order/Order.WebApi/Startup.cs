@@ -1,12 +1,12 @@
 using System.Reflection;
+using Confluent.Kafka;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Order.Application.DTOs.OrderDTOs;
-using Order.Application.DTOs.PayloadDTOs;
+using Microsoft.Extensions.Options;
+using Order.Application.Deserializers;
 using Order.Application.DTOs.UserDTOs;
 using Order.Application.Interfaces;
 using Order.Application.Services;
-using Order.Application.Validators;
 using Order.Domain.Interfaces;
 using Order.Infrastructure.Repositories;
 
@@ -18,7 +18,7 @@ public static class Startup
 	{
 		services.AddScoped<IOrderService, OrderService>();
 		services.AddScoped<IPayloadService, PayloadService>();
-		services.AddScoped<IUserService, UserService>();
+		services.AddScoped<IUserService, UserService>();				
 	}
 	
 	public static void ConfigureRepositories(this IServiceCollection services)
@@ -32,5 +32,23 @@ public static class Startup
 	{
 		services.AddFluentValidationAutoValidation();
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+	}
+	
+	public static void ConfigureBroker(this IServiceCollection services, IConfiguration configuration)
+	{		
+		services.Configure<ConsumerConfig>(configuration.GetSection("Kafka"));
+		
+		services.AddTransient<IConsumer<long, UserMessageDto>>(provider =>
+		{			
+			var config = provider.GetRequiredService<IOptions<ConsumerConfig>>().Value;
+
+			var consumer = new ConsumerBuilder<long, UserMessageDto>(config)
+				.SetValueDeserializer(new UserMessageDtoDeserializer())
+				.Build();
+
+			return consumer;			
+		});
+
+		services.AddHostedService<ConsumerService>();
 	}
 }

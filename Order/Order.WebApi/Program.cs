@@ -20,6 +20,8 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)));
 builder.Services.ConfigureServices();
 builder.Services.ConfigureRepositories();
 
+builder.Services.ConfigureBroker(builder.Configuration);
+
 builder.Services.AddRouting(options => {
 	options.LowercaseUrls = true;
 	options.LowercaseQueryStrings = true;
