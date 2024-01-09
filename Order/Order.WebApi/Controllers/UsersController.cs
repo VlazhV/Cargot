@@ -24,10 +24,10 @@ public class UsersController: ControllerBase
 		return Ok(await _userService.GetAllAsync());
 	}
 	
-	[HttpPost]
-	public async Task<ActionResult<GetUserDto>> CreateAsync([FromBody] UpdateUserDto userDto)
+	[HttpPost("{id}")]
+	public async Task<ActionResult<GetUserDto>> CreateAsync([FromRoute] long id, [FromBody] UpdateUserDto userDto)
 	{
-		return Ok(await _userService.CreateAsync(userDto));
+		return Ok(await _userService.CreateAsync(id, userDto));
 	}
 	
 	[HttpGet("{id}")]
