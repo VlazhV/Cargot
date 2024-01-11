@@ -7,11 +7,6 @@ namespace Ship.Infrastructure.Data;
 public class DatabaseContext: DbContext
 {
 	public DbSet<Domain.Entities.Ship> Ships{ get; set; }
-	public DbSet<Car> Cars { get; set; }
-	public DbSet<Trailer> Trailers { get; set; }
-	public DbSet<Driver> Drivers { get; set; }
-	public DbSet<RouteStop> RouteStops { get; set; }
-	public DbSet<RouteStopType> RouteStopTypes { get; set; }
 	
 	public DatabaseContext(DbContextOptions<DatabaseContext> options): base(options)
 	{		
