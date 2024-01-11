@@ -7,6 +7,8 @@ using AutoMapper;
 using Identity.DataAccess.Specifications;
 using Identity.Business.Exceptions;
 using System.Security.Cryptography;
+using Confluent.Kafka;
+using Identity.Business.Constants;
 
 namespace Identity.Business.Services;
 
@@ -15,12 +17,15 @@ public class UserService : IUserService
 	private readonly IUserRepository _userRepository;
 	private readonly ITokenService _tokenService;
 	private readonly IMapper _mapper;
+	private readonly IProducer<long, UserIdDto> _producer;
 
 	public UserService(
+			IProducer<long, UserIdDto> producer,
 			IUserRepository userRepository,
 			ITokenService tokenService,
 			IMapper mapper)
 	{
+		_producer = producer;
 		_tokenService = tokenService;
 		_userRepository = userRepository;
 		_mapper = mapper;
@@ -87,9 +92,10 @@ public class UserService : IUserService
 		if (_userRepository.DoesItExist(user))
 			throw new ApiException("email, phone number or user name is reserved", ApiException.BadRequest);
 		
-		await HandleIdentityResultAsync(_userRepository.CreateAsync(user, signupDto.Password!));
-			
+		await HandleIdentityResultAsync(_userRepository.CreateAsync(user, signupDto.Password!));			
 		await _userRepository.AddToRoleAsync(user, Role.Client);
+
+		await ProduceAsync(user, Topics.UserCreated);
 		
 		var tokenDto = await LoginAsync(_mapper.Map<LoginDto>(signupDto));
 
@@ -140,6 +146,8 @@ public class UserService : IUserService
 
 		var userDto = _mapper.Map<UserDto>(user);
 		userDto.Role = (await _userRepository.GetRolesAsync(user)).First();
+
+		await ProduceAsync(user, Topics.UserUpdated);
 		
 		return userDto;
 	}
@@ -166,7 +174,9 @@ public class UserService : IUserService
 		var user = await _userRepository.FindByIdAsync(id)
 			?? throw new ApiException("User is not found", ApiException.NotFound);
 
-		await HandleIdentityResultAsync(_userRepository.DeleteAsync(user));		
+		await HandleIdentityResultAsync(_userRepository.DeleteAsync(user));
+
+		await ProduceAsync(user, Topics.UserDeleted);
 	}
 	
 	private async Task HandleIdentityResultAsync(Task<IdentityResult> taskResult)
@@ -181,4 +191,15 @@ public class UserService : IUserService
 		}
 	}
 	
+	private async Task ProduceAsync(IdentityUser<long> user, string topic)
+	{
+		var userIdDto = _mapper.Map<UserIdDto>(user);
+		var message = new Message<long, UserIdDto>
+		{
+			Key = userIdDto.Id,
+			Value = userIdDto
+		};
+
+		await _producer.ProduceAsync(topic, message);
+	}
 }
