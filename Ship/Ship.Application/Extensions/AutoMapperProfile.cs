@@ -7,7 +7,8 @@ public class AutoMapperProfile: Profile
 {
 	public AutoMapperProfile()
 	{
-		CreateMap<Domain.Entities.Ship, GetShipDto>();
+        CreateMap<Domain.Entities.Ship, GetShipDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
         CreateMap<UpdateShipDto, Domain.Entities.Ship>();
-    }
+	}
 }

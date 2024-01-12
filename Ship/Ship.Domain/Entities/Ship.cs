@@ -1,8 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson;
+
 namespace Ship.Domain.Entities;
 
 public class Ship
 {
-	public long Id { get; set; }
+	[Key]
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	public ObjectId Id { get; set; }
 	
 	public DateTime PlannedStart { get; set; }
 	public DateTime PlannedFinish { get; set; }
@@ -10,7 +16,7 @@ public class Ship
 	public DateTime? Start { get; set; }
 	public DateTime? Finish { get; set; }
 
-	public IEnumerable<long> Orders { get; set; } = null!;
+	public long[] Orders { get; set; } = null!;
 	
 	public int AutoparkId { get; set; }
 }
