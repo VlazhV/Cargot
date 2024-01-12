@@ -5,6 +5,7 @@ using Ship.Application.Exceptions;
 using Ship.Application.Interfaces;
 using Ship.Domain.Interfaces;
 using MongoDB.Bson;
+using Ship.Application.Specifications;
 
 namespace Ship.Application.Services;
 
@@ -44,9 +45,15 @@ public class ShipService: IShipService
 		await _shipRepository.SaveChangesAsync();				
 	}
 
-	public async Task<IEnumerable<GetShipDto>> GetAllAsync()
-	{
-		var ships = await _shipRepository.GetAllAsync();
+	public async Task<IEnumerable<GetShipDto>> GetAllAsync(PagingDto pagingDto)
+	{		
+		var pageSpec = new PageSpecification<Domain.Entities.Ship>(pagingDto.Offset, pagingDto.Limit);
+        var specs = new ISpecification<Domain.Entities.Ship>[]
+        {
+            pageSpec
+        };
+
+        var ships = await _shipRepository.GetAllAsync(specs);
 
 		return _mapper.Map<IEnumerable<GetShipDto>>(ships);
 	}
@@ -97,7 +104,7 @@ public class ShipService: IShipService
 	public async Task<GetShipDto> UpdateAsync(string id, UpdateShipDto shipDto)
 	{
 		var objectId = ObjectId.Parse(id);
-        
+		
 		if (!await _shipRepository.IsShipExists(objectId))
 		{
 			throw new ApiException(Messages.ShipIsNotFound, ApiException.NotFound);

@@ -19,23 +19,24 @@ public class ShipsController: ControllerBase
 	
 	[HttpGet]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync()
+	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync([FromQuery] PagingDto pagingDto)
 	{
 		return Ok(await _shipService.GetAllAsync());
 	}
 	
 	[HttpGet("{id}")]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<GetShipDto>> GetByIdAsync(string id)
+	public async Task<ActionResult<GetShipDto>> GetByIdAsync([FromRoute] string id)
 	{
 		return Ok(await _shipService.GetByIdAsync(id));
 	}
 	
 	[HttpDelete("{id}")]
 	[AuthorizeAdminManager]
-	public async Task<ActionResult> DeleteAsync(string id)
+	public async Task<ActionResult> DeleteAsync([FromRoute] string id)
 	{
 		await _shipService.DeleteAsync(id);
+		
 		return NoContent();
 	}
 	
@@ -48,14 +49,14 @@ public class ShipsController: ControllerBase
 	
 	[HttpPut("{id}")]
 	[AuthorizeAdminManager]
-	public async Task<ActionResult<GetShipDto>> UpdateAsync(string id, [FromBody] UpdateShipDto shipDto)
+	public async Task<ActionResult<GetShipDto>> UpdateAsync([FromRoute] string id, [FromBody] UpdateShipDto shipDto)
 	{
 		return Ok(await _shipService.UpdateAsync(id, shipDto));
 	}
 	
 	[HttpPatch("{id}")]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<GetShipDto>> MarkAsync(string id)
+	public async Task<ActionResult<GetShipDto>> MarkAsync([FromRoute] string id)
 	{
 		return Ok(await _shipService.MarkAsync(id));
 	}

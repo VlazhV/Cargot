@@ -25,10 +25,17 @@ public class RepositoryBase<T, K> : IRepository<T, K> where T : class
 		_db.Remove(entity!);
 	}
 
-	public async Task<IEnumerable<T>> GetAllAsync()
+	public async Task<IEnumerable<T>> GetAllAsync(IEnumerable<ISpecification<T>> specs)
 	{
-		return await _db.Set<T>().AsNoTracking().ToListAsync();
-	}
+		var query = _db.Set<T>().AsNoTracking();
+		
+		foreach (var spec in specs)
+		{
+			query = spec.Build(query);
+		}
+		
+		return await query.ToListAsync();
+    }
 
 	public async Task<T?> GetByIdAsync(K id)
 	{
