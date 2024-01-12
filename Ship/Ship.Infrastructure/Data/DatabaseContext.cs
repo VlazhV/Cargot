@@ -1,6 +1,5 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Ship.Domain.Entities;
+using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace Ship.Infrastructure.Data;
 
@@ -15,6 +14,11 @@ public class DatabaseContext: DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-	}
+		modelBuilder.Entity<Domain.Entities.Ship>()
+			.ToCollection("ships");
+
+        modelBuilder.Entity<Domain.Entities.Ship>()
+            .Property(ship => ship.Id)
+            .ValueGeneratedOnAdd();
+    }
 }

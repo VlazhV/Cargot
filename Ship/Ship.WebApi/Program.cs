@@ -3,16 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Ship.Application.Extensions;
 using Ship.Infrastructure.Data;
 using Ship.WebApi;
+using MongoDB.Driver;
+using MongoDB.EntityFrameworkCore;
+using Ship.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
-	options.UseSqlServer(
-		builder.Configuration.GetConnectionString("Default"),
-		sqlBuilder => sqlBuilder.MigrationsAssembly(
-			Assembly.GetAssembly(typeof(DatabaseContext))!.GetName().Name
-		)
-	));
+	options.UseMongoDB(
+		builder.Configuration["MongoDb:ConnectionString"]!,
+		builder.Configuration["MongoDb:DatabaseName"]!
+	)
+);
 	
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)));
 
@@ -42,6 +44,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
