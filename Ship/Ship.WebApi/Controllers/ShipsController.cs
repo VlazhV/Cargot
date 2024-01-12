@@ -21,7 +21,7 @@ public class ShipsController: ControllerBase
 	[AuthorizeAdminManagerDriver]
 	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync([FromQuery] PagingDto pagingDto)
 	{
-		return Ok(await _shipService.GetAllAsync());
+		return Ok(await _shipService.GetAllAsync(pagingDto));
 	}
 	
 	[HttpGet("{id}")]
