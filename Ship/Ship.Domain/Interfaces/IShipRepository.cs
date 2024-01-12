@@ -1,6 +1,8 @@
+using MongoDB.Bson;
+
 namespace Ship.Domain.Interfaces;
 
-public interface IShipRepository: IRepository<Entities.Ship, long>
+public interface IShipRepository: IRepository<Entities.Ship, ObjectId>
 {
-    Task<bool> IsShipExists(long id);
+    Task<bool> IsShipExists(ObjectId id);
 }

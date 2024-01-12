@@ -4,6 +4,7 @@ using Ship.Application.DTOs;
 using Ship.Application.Exceptions;
 using Ship.Application.Interfaces;
 using Ship.Domain.Interfaces;
+using MongoDB.Bson;
 
 namespace Ship.Application.Services;
 
@@ -21,6 +22,7 @@ public class ShipService: IShipService
 	public async Task<GetShipDto> CreateAsync(UpdateShipDto shipDto)
 	{
 		var ship = _mapper.Map<Domain.Entities.Ship>(shipDto);
+		ship.Id = ObjectId.GenerateNewId();
 
 		ship = await _shipRepository.CreateAsync(ship);
 		await _shipRepository.SaveChangesAsync();
@@ -28,9 +30,10 @@ public class ShipService: IShipService
 		return _mapper.Map<GetShipDto>(ship);
 	}
 
-	public async Task DeleteAsync(long id)
+	public async Task DeleteAsync(string id)
 	{
-		var ship = await _shipRepository.GetByIdAsync(id);
+		var objectId = ObjectId.Parse(id);
+		var ship = await _shipRepository.GetByIdAsync(objectId);
 		
 		if (ship is null)
 		{
@@ -48,9 +51,10 @@ public class ShipService: IShipService
 		return _mapper.Map<IEnumerable<GetShipDto>>(ships);
 	}
 
-	public async Task<GetShipDto> GetByIdAsync(long id)
+	public async Task<GetShipDto> GetByIdAsync(string id)
 	{
-		var ship = await _shipRepository.GetByIdAsync(id);
+		var objectId = ObjectId.Parse(id);
+		var ship = await _shipRepository.GetByIdAsync(objectId);
 		
 		if (ship is null)
 		{
@@ -60,9 +64,10 @@ public class ShipService: IShipService
 		return _mapper.Map<GetShipDto>(ship);
 	}
 
-	public async Task<GetShipDto> MarkAsync(long id)
+	public async Task<GetShipDto> MarkAsync(string id)
 	{
-		var ship = await _shipRepository.GetByIdAsync(id);
+		var objectId = ObjectId.Parse(id);
+		var ship = await _shipRepository.GetByIdAsync(objectId);
 		
 		if (ship is null)
 		{
@@ -72,11 +77,11 @@ public class ShipService: IShipService
 		switch (ship.Start)
 		{
 			case null:
-				ship.Start = DateTime.Now;
+				ship.Start = DateTime.UtcNow;
 				break;
 			
 			case not null when ship.Finish is null:
-				ship.Finish = DateTime.Now;
+				ship.Finish = DateTime.UtcNow;
 				break;
 				
 			default:
@@ -86,18 +91,20 @@ public class ShipService: IShipService
 		_shipRepository.Update(ship);
 		await _shipRepository.SaveChangesAsync();
 
-        return _mapper.Map<GetShipDto>(ship);
-    }
+		return _mapper.Map<GetShipDto>(ship);
+	}
 
-	public async Task<GetShipDto> UpdateAsync(long id, UpdateShipDto shipDto)
+	public async Task<GetShipDto> UpdateAsync(string id, UpdateShipDto shipDto)
 	{
-		if (!await _shipRepository.IsShipExists(id))
+		var objectId = ObjectId.Parse(id);
+        
+		if (!await _shipRepository.IsShipExists(objectId))
 		{
 			throw new ApiException(Messages.ShipIsNotFound, ApiException.NotFound);
 		}
 		
 		var ship = _mapper.Map<Domain.Entities.Ship>(shipDto);
-		ship.Id = id;
+		ship.Id = new ObjectId(id.ToString());
 
 		_shipRepository.Update(ship);
 		await _shipRepository.SaveChangesAsync();

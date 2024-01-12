@@ -4,11 +4,11 @@ namespace Ship.Application.Interfaces;
 
 public interface IShipService
 {
-	Task<GetShipDto> GetByIdAsync(long id);
+	Task<GetShipDto> GetByIdAsync(string id);
 	Task<IEnumerable<GetShipDto>> GetAllAsync();
 	Task<GetShipDto> CreateAsync(UpdateShipDto shipDto);
-	Task<GetShipDto> UpdateAsync(long id, UpdateShipDto shipDto);
-	Task DeleteAsync(long id);
+	Task<GetShipDto> UpdateAsync(string id, UpdateShipDto shipDto);
+	Task DeleteAsync(string id);
 
-    Task<GetShipDto> MarkAsync(long id);
+    Task<GetShipDto> MarkAsync(string id);
 }

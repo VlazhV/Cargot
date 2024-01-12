@@ -1,16 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Ship.Domain.Interfaces;
 using Ship.Infrastructure.Data;
 
 namespace Ship.Infrastructure.Repositories;
 
-public class ShipRepository : RepositoryBase<Domain.Entities.Ship, long>, IShipRepository
+public class ShipRepository : RepositoryBase<Domain.Entities.Ship, ObjectId>, IShipRepository
 {
 	public ShipRepository(DatabaseContext db) : base(db)
 	{
 	}
 
-	public Task<bool> IsShipExists(long id)
+	public Task<bool> IsShipExists(ObjectId id)
 	{
 		return _db.Ships
 			.AsNoTracking()
