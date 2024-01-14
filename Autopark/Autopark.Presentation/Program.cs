@@ -33,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerServices();
+builder.Services.RegisterGrpcService();
 
 var app = builder.Build();
 
@@ -48,5 +49,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UserGrpcService();
 app.Run();
