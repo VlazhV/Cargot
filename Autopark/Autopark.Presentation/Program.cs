@@ -44,10 +44,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandlerMiddleware();
-
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UserGrpcService();
+app.UseGrpcService();
 app.Run();

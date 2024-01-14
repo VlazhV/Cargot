@@ -41,7 +41,7 @@ public static class Startup
 		services.AddCodeFirstGrpc();
 	}
 	
-	public static void UserGrpcService(this IApplicationBuilder app)
+	public static void UseGrpcService(this IApplicationBuilder app)
 	{
 		app.UseEndpoints(endpoints =>
 		{
