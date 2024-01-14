@@ -13,9 +13,9 @@ public class RepositoryBase<T, K> : IRepository<T, K> where T : class
 		_db = db;
 	}
 	
-	public async Task<T> CreateAsync(T entity)
+	public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
 	{
-		var entry = await _db.AddAsync(entity!);
+		var entry = await _db.AddAsync(entity!, cancellationToken);
 
 		return entry.Entity;
 	}
@@ -25,7 +25,7 @@ public class RepositoryBase<T, K> : IRepository<T, K> where T : class
 		_db.Remove(entity!);
 	}
 
-	public async Task<IEnumerable<T>> GetAllAsync(IEnumerable<ISpecification<T>> specs)
+	public async Task<IEnumerable<T>> GetAllAsync(IEnumerable<ISpecification<T>> specs, CancellationToken cancellationToken)
 	{
 		var query = _db.Set<T>().AsNoTracking();
 		
@@ -34,17 +34,17 @@ public class RepositoryBase<T, K> : IRepository<T, K> where T : class
 			query = spec.Build(query);
 		}
 		
-		return await query.ToListAsync();
+		return await query.ToListAsync(cancellationToken);
     }
 
-	public async Task<T?> GetByIdAsync(K id)
+	public async Task<T?> GetByIdAsync(K id, CancellationToken cancellationToken)
 	{
-		return await _db.Set<T>().FindAsync(id);
+		return await _db.Set<T>().FindAsync(id, cancellationToken);
 	}
 
-	public async Task SaveChangesAsync()
+	public async Task SaveChangesAsync(CancellationToken cancellationToken)
 	{
-		await _db.SaveChangesAsync();
+		await _db.SaveChangesAsync(cancellationToken);
 	}
 
 	public T Update(T entity)

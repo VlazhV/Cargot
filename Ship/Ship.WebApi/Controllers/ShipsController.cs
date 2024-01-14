@@ -19,45 +19,45 @@ public class ShipsController: ControllerBase
 	
 	[HttpGet]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync([FromQuery] PagingDto pagingDto)
+	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync([FromQuery] PagingDto pagingDto, CancellationToken cancellationToken)
 	{
-		return Ok(await _shipService.GetAllAsync(pagingDto));
+		return Ok(await _shipService.GetAllAsync(pagingDto, cancellationToken));
 	}
 	
 	[HttpGet("{id}")]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<GetShipDto>> GetByIdAsync([FromRoute] string id)
+	public async Task<ActionResult<GetShipDto>> GetByIdAsync([FromRoute] string id, CancellationToken cancellationToken)
 	{
-		return Ok(await _shipService.GetByIdAsync(id));
+		return Ok(await _shipService.GetByIdAsync(id, cancellationToken));
 	}
 	
 	[HttpDelete("{id}")]
 	[AuthorizeAdminManager]
-	public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+	public async Task<ActionResult> DeleteAsync([FromRoute] string id, CancellationToken cancellationToken)
 	{
-		await _shipService.DeleteAsync(id);
+		await _shipService.DeleteAsync(id, cancellationToken);
 		
 		return NoContent();
 	}
 	
 	[HttpPost]
 	[AuthorizeAdminManager]
-	public async Task<ActionResult<GetShipDto>> CreateAsync([FromBody] UpdateShipDto shipDto)
+	public async Task<ActionResult<GetShipDto>> CreateAsync([FromBody] UpdateShipDto shipDto, CancellationToken cancellationToken)
 	{
-		return Ok(await _shipService.CreateAsync(shipDto));
+		return Ok(await _shipService.CreateAsync(shipDto, cancellationToken));
 	}
 	
 	[HttpPut("{id}")]
 	[AuthorizeAdminManager]
-	public async Task<ActionResult<GetShipDto>> UpdateAsync([FromRoute] string id, [FromBody] UpdateShipDto shipDto)
+	public async Task<ActionResult<GetShipDto>> UpdateAsync([FromRoute] string id, [FromBody] UpdateShipDto shipDto, CancellationToken cancellationToken)
 	{
-		return Ok(await _shipService.UpdateAsync(id, shipDto));
+		return Ok(await _shipService.UpdateAsync(id, shipDto, cancellationToken));
 	}
 	
 	[HttpPatch("{id}")]
 	[AuthorizeAdminManagerDriver]
-	public async Task<ActionResult<GetShipDto>> MarkAsync([FromRoute] string id)
+	public async Task<ActionResult<GetShipDto>> MarkAsync([FromRoute] string id, CancellationToken cancellationToken)
 	{
-		return Ok(await _shipService.MarkAsync(id));
+		return Ok(await _shipService.MarkAsync(id, cancellationToken));
 	}
 }

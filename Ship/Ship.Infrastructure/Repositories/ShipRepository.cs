@@ -12,10 +12,10 @@ public class ShipRepository : RepositoryBase<Domain.Entities.Ship, ObjectId>, IS
 	{
 	}
 
-	public Task<bool> IsShipExists(ObjectId id)
+	public Task<bool> IsShipExists(ObjectId id, CancellationToken cancellationToken)
 	{
 		return _db.Ships
 			.AsNoTracking()
-			.AnyAsync(ship => ship.Id == id);
+			.AnyAsync(ship => ship.Id == id, cancellationToken);
 	}
 }

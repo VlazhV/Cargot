@@ -20,21 +20,21 @@ public class ShipService: IShipService
 		_mapper = mapper;
 	}
 
-	public async Task<GetShipDto> CreateAsync(UpdateShipDto shipDto)
+	public async Task<GetShipDto> CreateAsync(UpdateShipDto shipDto, CancellationToken cancellationToken)
 	{
 		var ship = _mapper.Map<Domain.Entities.Ship>(shipDto);
 		ship.Id = ObjectId.GenerateNewId();
 
-		ship = await _shipRepository.CreateAsync(ship);
-		await _shipRepository.SaveChangesAsync();
+		ship = await _shipRepository.CreateAsync(ship, cancellationToken);
+		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
 	}
 
-	public async Task DeleteAsync(string id)
+	public async Task DeleteAsync(string id, CancellationToken cancellationToken)
 	{
 		var objectId = ObjectId.Parse(id);
-		var ship = await _shipRepository.GetByIdAsync(objectId);
+		var ship = await _shipRepository.GetByIdAsync(objectId, cancellationToken);
 		
 		if (ship is null)
 		{
@@ -42,26 +42,26 @@ public class ShipService: IShipService
 		}
 
 		_shipRepository.Delete(ship);
-		await _shipRepository.SaveChangesAsync();				
+		await _shipRepository.SaveChangesAsync(cancellationToken);				
 	}
 
-	public async Task<IEnumerable<GetShipDto>> GetAllAsync(PagingDto pagingDto)
+	public async Task<IEnumerable<GetShipDto>> GetAllAsync(PagingDto pagingDto, CancellationToken cancellationToken)
 	{		
 		var pageSpec = new PageSpecification<Domain.Entities.Ship>(pagingDto.Offset, pagingDto.Limit);
-        var specs = new ISpecification<Domain.Entities.Ship>[]
-        {
-            pageSpec
-        };
+		var specs = new ISpecification<Domain.Entities.Ship>[]
+		{
+			pageSpec
+		};
 
-        var ships = await _shipRepository.GetAllAsync(specs);
+        var ships = await _shipRepository.GetAllAsync(specs, cancellationToken);
 
 		return _mapper.Map<IEnumerable<GetShipDto>>(ships);
 	}
 
-	public async Task<GetShipDto> GetByIdAsync(string id)
+	public async Task<GetShipDto> GetByIdAsync(string id, CancellationToken cancellationToken)
 	{
 		var objectId = ObjectId.Parse(id);
-		var ship = await _shipRepository.GetByIdAsync(objectId);
+		var ship = await _shipRepository.GetByIdAsync(objectId, cancellationToken);
 		
 		if (ship is null)
 		{
@@ -71,10 +71,10 @@ public class ShipService: IShipService
 		return _mapper.Map<GetShipDto>(ship);
 	}
 
-	public async Task<GetShipDto> MarkAsync(string id)
+	public async Task<GetShipDto> MarkAsync(string id, CancellationToken cancellationToken)
 	{
 		var objectId = ObjectId.Parse(id);
-		var ship = await _shipRepository.GetByIdAsync(objectId);
+		var ship = await _shipRepository.GetByIdAsync(objectId, cancellationToken);
 		
 		if (ship is null)
 		{
@@ -96,16 +96,16 @@ public class ShipService: IShipService
 		}
 
 		_shipRepository.Update(ship);
-		await _shipRepository.SaveChangesAsync();
+		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
 	}
 
-	public async Task<GetShipDto> UpdateAsync(string id, UpdateShipDto shipDto)
+	public async Task<GetShipDto> UpdateAsync(string id, UpdateShipDto shipDto, CancellationToken cancellationToken)
 	{
 		var objectId = ObjectId.Parse(id);
 		
-		if (!await _shipRepository.IsShipExists(objectId))
+		if (!await _shipRepository.IsShipExists(objectId, cancellationToken))
 		{
 			throw new ApiException(Messages.ShipIsNotFound, ApiException.NotFound);
 		}
@@ -114,7 +114,7 @@ public class ShipService: IShipService
 		ship.Id = new ObjectId(id.ToString());
 
 		_shipRepository.Update(ship);
-		await _shipRepository.SaveChangesAsync();
+		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
 	}
