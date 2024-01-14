@@ -1,0 +1,176 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7246
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ships/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Delete", "Put", "Patch" ],
+      "SwaggerKey": "Ship"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Delete", "Put", "Patch" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/payloads/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/identity/{everything}",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Patch" ],
+      "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/autoparks/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars/schedules/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers/Schedules/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "Ship",
+      "Config": [
+        {
+          "Name": "Ships API",
+          "Version": "v1",
+          "Url": "https://localhost:7426/swagger/v1/swagger/json"
+        }
+      ]
+    },
+    {
+      "Key": "Autopark",
+      "Config": [
+        {
+          "Name": "Autoparks API",
+          "Version": "v1",
+          "Url": "https://localhost:5203/swagger/v1/swagger/json"
+        }
+      ]
+    },
+    {
+      "Key": "Order",
+      "Config": [
+        {
+          "Name": "Orders API",
+          "Version": "v1",
+          "Url": "https://localhost:5137/swagger/v1/swagger/json"
+        }
+      ]
+    },
+    {
+      "Key": "Identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "https://localhost:5193/swagger/v1/swagger/json"
+        }
+      ]
+    }
+  ]
+}
