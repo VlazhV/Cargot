@@ -26,6 +26,7 @@ public class ShipService: IShipService
 		ship.Id = ObjectId.GenerateNewId();
 
 		ship = await _shipRepository.CreateAsync(ship, cancellationToken);
+		cancellationToken.ThrowIfCancellationRequested();
 		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
@@ -42,6 +43,7 @@ public class ShipService: IShipService
 		}
 
 		_shipRepository.Delete(ship);
+		cancellationToken.ThrowIfCancellationRequested();
 		await _shipRepository.SaveChangesAsync(cancellationToken);				
 	}
 
@@ -53,7 +55,7 @@ public class ShipService: IShipService
 			pageSpec
 		};
 
-        var ships = await _shipRepository.GetAllAsync(specs, cancellationToken);
+		var ships = await _shipRepository.GetAllAsync(specs, cancellationToken);
 
 		return _mapper.Map<IEnumerable<GetShipDto>>(ships);
 	}
@@ -96,6 +98,7 @@ public class ShipService: IShipService
 		}
 
 		_shipRepository.Update(ship);
+		cancellationToken.ThrowIfCancellationRequested();
 		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
@@ -114,6 +117,7 @@ public class ShipService: IShipService
 		ship.Id = new ObjectId(id.ToString());
 
 		_shipRepository.Update(ship);
+		cancellationToken.ThrowIfCancellationRequested();
 		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);
