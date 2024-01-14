@@ -14,8 +14,8 @@ public static class Startup
 {
 	public static void ConfigureServices(this IServiceCollection services)
 	{
-        services.AddScoped<IShipService, ShipService>();
-    }
+		services.AddScoped<IShipService, ShipService>();
+	}
 	
 	public static void ConfigureRepositories(this IServiceCollection services)
 	{
