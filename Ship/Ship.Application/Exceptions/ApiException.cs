@@ -6,6 +6,7 @@ public class ApiException: Exception
 	public const int Unauthorized = 401;
 	public const int BadRequest = 400;
 	public const int Forbidden = 403;
+	public const int NotAcceptable = 406;
 	public int StatusCode { get; private set; }
 	
 	public ApiException() { }

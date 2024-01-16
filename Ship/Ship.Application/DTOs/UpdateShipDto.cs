@@ -7,5 +7,7 @@ public class UpdateShipDto
 	
 	public long[] Orders { get; set; } = null!;
 	
+	public int CarId { get; set; }
+	public int TrailerId { get; set; }
 	public int AutoparkId { get; set; }
 }

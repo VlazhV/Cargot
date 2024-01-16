@@ -6,6 +6,7 @@ using Autopark.DataAccess.Interfaces;
 using Autopark.DataAccess.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ProtoBuf.Grpc.Server;
 
 namespace Autopark.Presentation;
 
@@ -33,5 +34,18 @@ public static class Startup
 	{
 		services.AddFluentValidationAutoValidation();
 		services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateAutoparkValidator)));
+	}
+	
+	public static void RegisterGrpcService(this IServiceCollection services)
+	{
+		services.AddCodeFirstGrpc();
+	}
+	
+	public static void UseGrpcService(this IApplicationBuilder app)
+	{
+		app.UseEndpoints(endpoints =>
+		{
+			endpoints.MapGrpcService<gRPC.Services.AutoparkService>();
+		});
 	}
 }

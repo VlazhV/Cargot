@@ -33,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerServices();
+builder.Services.RegisterGrpcService();
 
 var app = builder.Build();
 
@@ -43,10 +44,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandlerMiddleware();
-
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseGrpcService();
 app.Run();

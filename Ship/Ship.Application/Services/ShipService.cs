@@ -6,18 +6,26 @@ using Ship.Application.Interfaces;
 using Ship.Domain.Interfaces;
 using MongoDB.Bson;
 using Ship.Application.Specifications;
+using Autopark.gRPC.Responses;
+using Autopark.gRPC.Services;
+using Autopark.gRPC.Requests;
 
 namespace Ship.Application.Services;
 
 public class ShipService: IShipService
 {
 	private readonly IShipRepository _shipRepository;
+	private readonly IAutoparkService _autoparkService;
 	private readonly IMapper _mapper;
 	
-	public ShipService(IShipRepository shipRepository, IMapper mapper)
+	public ShipService
+		(IShipRepository shipRepository, 
+		IMapper mapper,
+		IAutoparkService autoparkService)
 	{
 		_shipRepository = shipRepository;
 		_mapper = mapper;
+		_autoparkService = autoparkService;
 	}
 
 	public async Task<GetShipDto> CreateAsync(UpdateShipDto shipDto, CancellationToken cancellationToken)
@@ -118,6 +126,73 @@ public class ShipService: IShipService
 
 		_shipRepository.Update(ship);
 		cancellationToken.ThrowIfCancellationRequested();
+		await _shipRepository.SaveChangesAsync(cancellationToken);
+
+		return _mapper.Map<GetShipDto>(ship);
+	}
+	
+	public async Task<GetShipDto> GenerateShipAsync(GenerateShipDto shipDto, CancellationToken cancellationToken)
+	{
+		var interval = _mapper.Map<TimeInterval>(shipDto);
+
+		var isSameAutopark = true;
+
+		var cars = await _autoparkService.GetFreeCarsAsync(interval);
+		var trailers = await _autoparkService.GetFreeTrailersAsync(interval);
+		
+		if (!cars.Any() || !trailers.Any())
+		{
+			throw new ApiException(Messages.ThereIsNoFreeCarOrTrailer, ApiException.NotAcceptable);
+		}
+
+		var minAutoparkId = Math.Max(
+			cars.Min(car => car.AutoparkId), 
+			trailers.Min(trailer => trailer.AutoparkId)
+		);
+
+		var maxAutoparkId = Math.Min(
+			cars.Max(car => car.AutoparkId),
+			trailers.Max(trailer => trailer.AutoparkId)
+		);
+
+		IEnumerable<VehicleResponse> suitCars = new VehicleResponse[] { };
+		IEnumerable<VehicleResponse> suitTrailers = new VehicleResponse[] { };
+		
+		
+		for (int autoparkId = minAutoparkId; autoparkId <= maxAutoparkId; autoparkId++)
+		{
+			suitCars = cars.Where(car => car.AutoparkId == autoparkId);
+			suitTrailers = trailers.Where(trailer => trailer.AutoparkId == autoparkId);			
+			
+			if (!suitCars.Any() && !suitTrailers.Any())
+			{
+				if (autoparkId == maxAutoparkId)
+					isSameAutopark = false;
+			} 
+			else 
+			{
+				break;
+			} 
+		}
+
+		var ship = _mapper.Map<Domain.Entities.Ship>(shipDto);
+
+		ship.Id = ObjectId.GenerateNewId();
+		
+		if (isSameAutopark)
+		{
+			ship.AutoparkId = suitCars.First().AutoparkId;
+			ship.CarId = suitCars.First().Id;
+			ship.TrailerId = suitTrailers.First().Id;
+		} 
+		else
+		{
+			ship.AutoparkId = cars.First().AutoparkId;
+			ship.CarId = cars.First().Id;
+			ship.TrailerId = trailers.First().Id;
+		}
+
+		ship = await _shipRepository.CreateAsync(ship, cancellationToken);
 		await _shipRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<GetShipDto>(ship);

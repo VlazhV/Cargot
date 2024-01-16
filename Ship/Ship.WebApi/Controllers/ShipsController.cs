@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
+using Autopark.gRPC.Services;
 using Microsoft.AspNetCore.Mvc;
 using Ship.Application.DTOs;
+using Autopark.gRPC.Requests;
 using Ship.Application.Interfaces;
 using Ship.WebApi.Extensions;
 
@@ -18,7 +19,7 @@ public class ShipsController: ControllerBase
 	}
 	
 	[HttpGet]
-	[AuthorizeAdminManagerDriver]
+	//[AuthorizeAdminManagerDriver]
 	public async Task<ActionResult<IEnumerable<GetShipDto>>> GetAllAsync([FromQuery] PagingDto pagingDto, CancellationToken cancellationToken)
 	{
 		return Ok(await _shipService.GetAllAsync(pagingDto, cancellationToken));
@@ -41,10 +42,17 @@ public class ShipsController: ControllerBase
 	}
 	
 	[HttpPost]
-	[AuthorizeAdminManager]
+//	[AuthorizeAdminManager]
 	public async Task<ActionResult<GetShipDto>> CreateAsync([FromBody] UpdateShipDto shipDto, CancellationToken cancellationToken)
 	{
 		return Ok(await _shipService.CreateAsync(shipDto, cancellationToken));
+	}
+	
+	[HttpPost("auto")]
+	[AuthorizeAdminManager]
+	public async Task<ActionResult<GetShipDto>> GenerateAsync([FromBody] GenerateShipDto shipDto, CancellationToken cancellationToken)
+	{
+		return Ok(await _shipService.GenerateShipAsync(shipDto, cancellationToken));
 	}
 	
 	[HttpPut("{id}")]

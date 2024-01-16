@@ -19,4 +19,6 @@ public class Ship
 	public long[] Orders { get; set; } = null!;
 	
 	public int AutoparkId { get; set; }
+	public int CarId { get; set; }
+	public int TrailerId { get; set; }
 }

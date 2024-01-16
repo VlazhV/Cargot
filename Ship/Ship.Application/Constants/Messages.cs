@@ -4,4 +4,5 @@ public static class Messages
 {
 	public const string ShipIsNotFound = "Ship is not found";
 	public const string ShipIsFullMarked = "Ship is full marked";
+	public const string ThereIsNoFreeCarOrTrailer = "There is no free car or trailer";
 }
