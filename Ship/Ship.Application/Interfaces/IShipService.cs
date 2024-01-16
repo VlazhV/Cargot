@@ -11,4 +11,5 @@ public interface IShipService
 	Task DeleteAsync(string id, CancellationToken cancellationToken);
 
 	Task<GetShipDto> MarkAsync(string id, CancellationToken cancellationToken);
+	Task<GetShipDto> GenerateShipAsync(GenerateShipDto shipDto, CancellationToken cancellationToken);
 }

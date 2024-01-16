@@ -34,6 +34,7 @@ builder.Services.AddIdentityService(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerServices();
+builder.Services.RegisterGrpcClient(builder.Configuration);
 
 var app = builder.Build();
 
