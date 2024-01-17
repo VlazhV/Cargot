@@ -276,18 +276,5 @@
       "UpstreamHttpMethod": [ "Post" ],
       "SwaggerKey": "Identity"
     }
-  ],
-  "SwaggerEndPoints": [
-
-    {
-      "Key": "Autopark",
-      "Config": [
-        {
-          "Name": "Autoparks API",
-          "Version": "v1",
-          "Url": "http://localhost:5203/swagger/v1/swagger/json"
-        }
-      ]
-    }
   ]
 }

@@ -16,6 +16,5 @@ var app = builder.Build();
 
 app.UseRouting();
 
-
 app.UseOcelot().Wait();
 app.Run();
