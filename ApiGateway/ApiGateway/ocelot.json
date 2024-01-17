@@ -1,0 +1,280 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/autoparks/",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/autoparks",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/autoparks/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/autoparks/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cars",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cars/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars/{id}",
+      "UpstreamHttpMethod": [ "Put", "Get", "Delete"],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cars/{id}/schedules",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars/{id}/schedules",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/trailers",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/trailers/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers/{id}",
+      "UpstreamHttpMethod": [ "Put", "Get", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/trailers/{id}/schedules",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers/{id}/schedules",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/cars/schedules/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cars/schedules/{id}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+    {
+      "DownstreamPathTemplate": "/api/trailers/schedules/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5203
+        }
+      ],
+      "UpstreamPathTemplate": "/api/trailers/schedules/{id}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "Autopark"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/orders",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/orders/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders/{id}",
+      "UpstreamHttpMethod": [ "Put", "Get", "Patch", "Delete"],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/orders/{id}/status",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders/{id}/status",
+      "UpstreamHttpMethod": [ "Put" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/payloads",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/payloads",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/payloads/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5137
+        }
+      ],
+      "UpstreamPathTemplate": "/api/payloads/{id}",
+      "UpstreamHttpMethod": [ "Put", "Get", "Delete"],
+      "SwaggerKey": "Order"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/ships",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7246
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ships",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "Ship"
+    },
+    {
+      "DownstreamPathTemplate": "/api/ships/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7246
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ships/{id}",
+      "UpstreamHttpMethod": [ "Put", "Get", "Delete", "Patch" ],
+      "SwaggerKey": "Ship"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/users",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
+      "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/users/profile/password",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users/profile/password",
+      "UpstreamHttpMethod": [ "Put" ],
+      "SwaggerKey": "Identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5193
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{everything}",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "Identity"
+    }
+  ]
+}
